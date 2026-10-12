@@ -1,1247 +1,610 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Elo — Conectando pessoas a ONGs</title>
-<meta name="description" content="Elo conecta quem quer ajudar a ONGs que precisam de alimentos, matéria-prima, profissionalização e muito mais.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elo, conectando pessoas a ONGs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
 <style>
-  :root{
-    --forest-900:#12291F;
-    --forest-800:#183B2C;
-    --forest-700:#1F4A38;
-    --moss-500:#3F8361;
-    --moss-300:#7CB79A;
-    --gold-500:#F2A63B;
-    --gold-600:#DB8F24;
-    --paper-50:#FBFAF6;
-    --paper-100:#F2EFE4;
-    --ink:#14261F;
-    --ink-soft:#3E4F47;
-    --line: rgba(20,38,31,0.12);
-    --radius-lg: 22px;
-    --radius-md: 14px;
-    --shadow-soft: 0 20px 45px -25px rgba(18,41,31,0.35);
-    --maxw: 1180px;
-    --font-display: 'Space Grotesk', system-ui, sans-serif;
-    --font-body: 'Inter', system-ui, sans-serif;
-  }
-
-  *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior:auto; }
-    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
-  }
-
-  body{
-    margin:0;
-    font-family:var(--font-body);
-    color:var(--ink);
-    background:var(--paper-50);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  img,svg{ display:block; max-width:100%; }
-
-  a{ color:inherit; }
-
-  :focus-visible{
-    outline:3px solid var(--gold-500);
-    outline-offset:3px;
-    border-radius:6px;
-  }
-
-  .wrap{
-    max-width:var(--maxw);
-    margin:0 auto;
-    padding-inline:24px;
-  }
-
-  h1,h2,h3{
-    font-family:var(--font-display);
-    line-height:1.08;
-    margin:0;
-    letter-spacing:-0.01em;
-  }
-
-  p{ margin:0; }
-
-  .eyebrow{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-    font-weight:600;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color:var(--moss-500);
-  }
-  .eyebrow .elo-mark{ width:16px; height:16px; }
-
-  /* ---------- Skip link ---------- */
-  .skip-link{
-    position:absolute;
-    left:-9999px;
-    top:auto;
-    background:var(--forest-900);
-    color:#fff;
-    padding:12px 20px;
-    border-radius:0 0 10px 0;
-    z-index:100;
-    font-weight:600;
-  }
-  .skip-link:focus{
-    left:0;
-    top:0;
-  }
-
-  /* ---------- Header ---------- */
-  header{
-    position:sticky;
-    top:0;
-    z-index:40;
-    background:rgba(251,250,246,0.88);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding-block:16px;
-  }
-  .logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-family:var(--font-display);
-    font-weight:700;
-    font-size:22px;
-    text-decoration:none;
-    color:var(--forest-900);
-  }
-  .logo .elo-mark{ width:30px; height:30px; }
-
-  .nav-links{
-    display:flex;
-    align-items:center;
-    gap:32px;
-    list-style:none;
-    margin:0;
-    padding:0;
-  }
-  .nav-links a{
-    text-decoration:none;
-    font-weight:500;
-    font-size:15px;
-    color:var(--ink-soft);
-    transition:color .15s ease;
-  }
-  .nav-links a:hover{ color:var(--forest-900); }
-
-  .nav-cta{
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
-
-  .btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    font-family:var(--font-body);
-    font-weight:600;
-    font-size:15px;
-    padding:12px 22px;
-    border-radius:999px;
-    text-decoration:none;
-    border:1.5px solid transparent;
-    cursor:pointer;
-    transition:transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
-    white-space:nowrap;
-  }
-  .btn:active{ transform:translateY(1px); }
-
-  .btn-primary{
-    background:var(--gold-500);
-    color:var(--forest-900);
-    box-shadow:0 12px 24px -12px rgba(219,143,36,0.75);
-  }
-  .btn-primary:hover{ background:var(--gold-600); }
-
-  .btn-ghost{
-    background:transparent;
-    border-color:var(--forest-900);
-    color:var(--forest-900);
-  }
-  .btn-ghost:hover{ background:var(--forest-900); color:#fff; }
-
-  .btn-outline-light{
-    background:transparent;
-    border-color:rgba(255,255,255,0.55);
-    color:#fff;
-  }
-  .btn-outline-light:hover{ background:rgba(255,255,255,0.12); }
-
-  .nav-toggle{
-    display:none;
-    background:none;
-    border:1.5px solid var(--forest-900);
-    border-radius:10px;
-    width:44px;
-    height:44px;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-  }
-  .nav-toggle svg{ width:20px; height:20px; }
-
-  /* ---------- Hero ---------- */
-  .hero{
-    position:relative;
-    overflow:hidden;
-    background:radial-gradient(120% 140% at 80% -10%, #21503c 0%, var(--forest-800) 45%, var(--forest-900) 100%);
-    color:#fff;
-    padding-block: 88px 110px;
-  }
-  .hero-grid{
-    display:grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap:56px;
-    align-items:center;
-  }
-  .hero h1{
-    font-size:clamp(34px, 4.6vw, 58px);
-    color:#fff;
-  }
-  .hero h1 em{
-    font-style:normal;
-    color:var(--gold-500);
-  }
-  .hero .lede{
-    margin-top:22px;
-    font-size:18px;
-    color:rgba(255,255,255,0.82);
-    max-width:52ch;
-  }
-  .hero-actions{
-    margin-top:34px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:14px;
-  }
-  .hero-eyebrow{
-    color:var(--gold-500);
-  }
-  .hero-eyebrow .elo-mark path,.hero-eyebrow .elo-mark circle{ stroke:var(--gold-500); }
-
-  .hero-stats{
-    margin-top:44px;
-    display:flex;
-    gap:36px;
-    flex-wrap:wrap;
-  }
-  .hero-stats div strong{
-    display:block;
-    font-family:var(--font-display);
-    font-size:26px;
-    color:#fff;
-  }
-  .hero-stats div span{
-    font-size:13px;
-    color:rgba(255,255,255,0.65);
-  }
-
-  /* Signature visual: interlocking "elo" rings forming a network */
-  .hero-visual{
-    position:relative;
-    aspect-ratio:1/1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .elo-orbit{
-    width:100%;
-    height:100%;
-  }
-  .elo-node{
-    transform-origin:center;
-    animation: elo-pulse 4.5s ease-in-out infinite;
-  }
-  .elo-node.n2{ animation-delay:.6s; }
-  .elo-node.n3{ animation-delay:1.2s; }
-  .elo-node.n4{ animation-delay:1.8s; }
-  @keyframes elo-pulse{
-    0%, 100%{ transform:scale(1); opacity:.9; }
-    50%{ transform:scale(1.06); opacity:1; }
-  }
-  .elo-link{
-    stroke-dasharray: 4 7;
-    animation: elo-flow 22s linear infinite;
-  }
-  @keyframes elo-flow{
-    to{ stroke-dashoffset:-200; }
-  }
-
-  /* ---------- Section shell ---------- */
-  section{ padding-block:96px; }
-  .section-head{
-    max-width:640px;
-    margin-bottom:52px;
-  }
-  .section-head h2{
-    margin-top:14px;
-    font-size:clamp(28px,3.2vw,38px);
-    color:var(--forest-900);
-  }
-  .section-head p{
-    margin-top:16px;
-    font-size:17px;
-    color:var(--ink-soft);
-  }
-
-  /* ---------- Como funciona ---------- */
-  .how{
-    background:var(--paper-100);
-    border-top:1px solid var(--line);
-    border-bottom:1px solid var(--line);
-  }
-  .how-steps{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:28px;
-  }
-  .how-step{
-    background:var(--paper-50);
-    border:1px solid var(--line);
-    border-radius:var(--radius-lg);
-    padding:32px 28px;
-    position:relative;
-  }
-  .how-step .num{
-    font-family:var(--font-display);
-    font-size:14px;
-    font-weight:700;
-    color:var(--moss-500);
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .how-step .num .dash{
-    width:26px;
-    height:1.5px;
-    background:var(--moss-300);
-  }
-  .how-step h3{
-    margin-top:18px;
-    font-size:20px;
-    color:var(--forest-900);
-  }
-  .how-step p{
-    margin-top:10px;
-    color:var(--ink-soft);
-    font-size:15.5px;
-  }
-  .how-step::after{
-    content:"";
-    position:absolute;
-    top:34px;
-    right:-14px;
-    width:24px;
-    height:24px;
-  }
-  .how-step:not(:last-child)::after{
-    background: none;
-  }
-
-  /* ---------- Categorias ---------- */
-  .cat-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:22px;
-  }
-  .cat-card{
-    border:1px solid var(--line);
-    border-radius:var(--radius-lg);
-    padding:28px;
-    background:var(--paper-50);
-    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  }
-  .cat-card:hover{
-    transform:translateY(-4px);
-    box-shadow:var(--shadow-soft);
-    border-color:transparent;
-  }
-  .cat-icon{
-    width:48px;
-    height:48px;
-    border-radius:14px;
-    background:var(--forest-900);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:18px;
-  }
-  .cat-icon svg{ width:24px; height:24px; stroke:var(--gold-500); }
-  .cat-card h3{
-    font-size:18px;
-    color:var(--forest-900);
-  }
-  .cat-card p{
-    margin-top:8px;
-    font-size:14.5px;
-    color:var(--ink-soft);
-  }
-  .cat-tag{
-    display:inline-block;
-    margin-top:14px;
-    font-size:11.5px;
-    font-weight:700;
-    letter-spacing:0.05em;
-    text-transform:uppercase;
-    padding:5px 10px;
-    border-radius:999px;
-  }
-  .cat-tag.live{ background:rgba(63,131,97,0.14); color:var(--moss-500); }
-  .cat-tag.soon{ background:rgba(242,166,59,0.16); color:var(--gold-600); }
-
-  /* ---------- Encontrar ONG ---------- */
-  .finder{
-    background:var(--paper-100);
-    border-top:1px solid var(--line);
-    border-bottom:1px solid var(--line);
-  }
-  .finder-controls{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:end;
-    gap:16px;
-    margin-bottom:28px;
-  }
-  .finder-field{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    font-size:13.5px;
-    font-weight:600;
-    color:var(--ink-soft);
-  }
-  .finder-field select,
-  .finder-field input{
-    font-family:var(--font-body);
-    font-size:15px;
-    padding:11px 14px;
-    border-radius:10px;
-    border:1.5px solid var(--line);
-    background:var(--paper-50);
-    color:var(--ink);
-    min-width:200px;
-  }
-  .finder-field select:focus,
-  .finder-field input:focus{
-    border-color:var(--moss-500);
-  }
-  #btn-geo{ background:var(--paper-50); }
-  #btn-geo svg{ flex-shrink:0; }
-  #btn-geo.active{
-    background:var(--forest-900);
-    color:#fff;
-    border-color:var(--forest-900);
-  }
-  .finder-status{
-    font-size:14px;
-    color:var(--ink-soft);
-    min-height:20px;
-    margin-bottom:8px;
-  }
-  .finder-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-  }
-  .finder-card{
-    background:var(--paper-50);
-    border:1px solid var(--line);
-    border-radius:var(--radius-md);
-    padding:24px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  .finder-card h3{
-    font-size:17px;
-    color:var(--forest-900);
-    font-family:var(--font-body);
-    font-weight:700;
-  }
-  .finder-card .finder-meta{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    font-size:12.5px;
-  }
-  .finder-card .finder-meta span{
-    background:rgba(63,131,97,0.12);
-    color:var(--moss-500);
-    padding:4px 10px;
-    border-radius:999px;
-    font-weight:600;
-  }
-  .finder-card .finder-dist{
-    font-size:13px;
-    color:var(--gold-600);
-    font-weight:700;
-  }
-  .finder-card p.desc{
-    font-size:14px;
-    color:var(--ink-soft);
-    flex-grow:1;
-  }
-  .finder-actions{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:12px;
-    margin-top:4px;
-  }
-  .finder-card .btn{
-    padding:9px 18px;
-    font-size:14px;
-  }
-  .btn-maps{
-    font-size:13.5px;
-    font-weight:600;
-    color:var(--moss-500);
-    text-decoration:none;
-    border-bottom:1px solid var(--moss-300);
-  }
-  .btn-maps:hover{ color:var(--forest-900); border-color:var(--forest-900); }
-  .finder-card-volunteer{
-    border-color:var(--gold-500);
-    background:rgba(242,166,59,0.06);
-  }
-  .finder-badge{
-    align-self:flex-start;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:0.04em;
-    text-transform:uppercase;
-    color:var(--gold-600);
-    background:rgba(242,166,59,0.18);
-    padding:4px 10px;
-    border-radius:999px;
-  }
-  .finder-cta{
-    margin-top:36px;
-    padding:28px;
-    border-radius:var(--radius-md);
-    background:rgba(242,166,59,0.1);
-    border:1px dashed var(--gold-600);
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-  }
-  .finder-cta p{
-    font-size:14.5px;
-    color:var(--ink-soft);
-    max-width:46ch;
-    margin:0;
-  }
-  .finder-empty{
-    grid-column:1/-1;
-    text-align:center;
-    padding:40px 20px;
-    color:var(--ink-soft);
-    font-size:15px;
-  }
-
-  /* ---------- Dois caminhos ---------- */
-  .paths{
-    background:var(--forest-900);
-    color:#fff;
-  }
-  .paths .section-head p{ color:rgba(255,255,255,0.72); }
-  .paths .section-head .eyebrow{ color:var(--gold-500); }
-  .path-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:24px;
-  }
-  .path-card{
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:var(--radius-lg);
-    padding:36px;
-  }
-  .path-card h3{
-    font-size:22px;
-    color:#fff;
-  }
-  .path-card p{
-    margin-top:12px;
-    color:rgba(255,255,255,0.72);
-    font-size:15.5px;
-  }
-  .path-card .btn{ margin-top:24px; }
-
-  /* ---------- CTA final ---------- */
-  .cta-final{
-    text-align:center;
-  }
-  .cta-final .wrap{
-    max-width:720px;
-  }
-  .cta-final .eyebrow{ justify-content:center; }
-  .cta-final h2{
-    margin-top:14px;
-    font-size:clamp(28px,3.6vw,42px);
-    color:var(--forest-900);
-  }
-  .cta-final p{
-    margin-top:16px;
-    font-size:17px;
-    color:var(--ink-soft);
-  }
-  .cta-final .hero-actions{ justify-content:center; margin-top:30px; }
-  .cta-final .btn-primary,.cta-final .btn-ghost{ color-scheme:light; }
-  .cta-final .btn-ghost{ border-color:var(--forest-900); color:var(--forest-900); }
-
-  /* ---------- Footer ---------- */
-  footer{
-    background:var(--forest-900);
-    color:rgba(255,255,255,0.65);
-    padding-block:48px;
-    border-top:1px solid rgba(255,255,255,0.1);
-  }
-  .footer-grid{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-  }
-  .footer-logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-family:var(--font-display);
-    font-weight:700;
-    font-size:18px;
-    color:#fff;
-  }
-  .footer-links{
-    display:flex;
-    gap:24px;
-    list-style:none;
-    padding:0;
-    margin:0;
-    font-size:14px;
-  }
-  .footer-links a{ text-decoration:none; }
-  .footer-links a:hover{ color:#fff; }
-  .footer-note{
-    font-size:12.5px;
-    margin-top:24px;
-    color:rgba(255,255,255,0.4);
-  }
-
-  /* ---------- Responsive ---------- */
-  @media (max-width: 900px){
-    .nav-links, .nav-cta .btn-ghost{ display:none; }
-    .nav-toggle{ display:flex; }
-    .hero-grid{ grid-template-columns:1fr; }
-    .hero-visual{ max-width:340px; margin-inline:auto; order:-1; }
-    .how-steps, .cat-grid, .path-grid, .finder-grid{ grid-template-columns:1fr; }
-    .finder-controls{ align-items:stretch; }
-    .finder-field select, .finder-field input{ min-width:0; width:100%; }
-    section{ padding-block:64px; }
-    .hero{ padding-block:56px 72px; }
-  }
-
-  .mobile-menu{
-    display:none;
-    flex-direction:column;
-    gap:4px;
-    padding:8px 24px 20px;
-    border-top:1px solid var(--line);
-  }
-  .mobile-menu.open{ display:flex; }
-  .mobile-menu a{
-    padding:12px 4px;
-    text-decoration:none;
-    color:var(--ink);
-    font-weight:500;
-    border-bottom:1px solid var(--line);
-  }
-  .mobile-menu .btn{ margin-top:12px; }
+  body{margin:0;background:#F4F6F1;color:#10291F;font-family:'Figtree',system-ui,sans-serif;font-size:17px;line-height:1.6}
+  a{color:#10291F}a:hover{color:#3F8361}
+  button{font-family:inherit}
+  .elo-btn{transition:transform .15s ease, box-shadow .15s ease;cursor:pointer}
+  .elo-btn:hover{transform:translateY(-1px)}
+  .elo-btn:focus-visible,.elo-pill:focus-visible,.elo-link:focus-visible{outline:3px solid #F2A63B;outline-offset:3px}
+  .elo-card{transition:border-color .15s ease}
+  .elo-card:hover{border-color:#3F8361}
+  .elo-node{transform-box:fill-box;transform-origin:center;animation:elo-pulse 4.5s ease-in-out infinite}
+  .elo-node.n2{animation-delay:.6s}.elo-node.n3{animation-delay:1.2s}.elo-node.n4{animation-delay:1.8s}
+  @keyframes elo-pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
+  .elo-flow{stroke-dasharray:4 7;animation:elo-flow 22s linear infinite}
+  @keyframes elo-flow{to{stroke-dashoffset:-200}}
+  .elo-cat{transform-box:fill-box;transform-origin:center;opacity:.92;transition:opacity .12s linear, transform .12s linear}
+  .elo-tip{fill:rgba(255,255,255,0.82);transition:fill .12s linear, stroke-width .12s linear;stroke:#F2A63B;stroke-width:0}
+  .elo-cats:hover .elo-cat{opacity:.3}
+  .elo-cats .elo-cat:hover{opacity:1;transform:scale(1.08)}
+  .elo-cats .elo-cat:hover .elo-tip{fill:#FFFFFF;stroke-width:2}
+  .elo-bar{transition:background-color .35s ease}
+  .elo-rv{opacity:0;transform:translateX(-48px);transition:opacity .8s ease, transform .8s cubic-bezier(.22,.8,.24,1)}
+  .elo-rv.in{opacity:1;transform:none}
+  .elo-rv.up{transform:translateY(56px)}
+  .elo-rv.up.in{transform:none}
+  input,textarea,select{outline:none}
+  input:focus,textarea:focus,select:focus{border-color:#3F8361}
+  @media (prefers-reduced-motion: reduce){.elo-btn{transition:none}.elo-btn:hover{transform:none}.elo-node,.elo-flow{animation:none}.elo-cat,.elo-tip,.elo-bar,.elo-rv{transition:none}.elo-cats .elo-cat:hover{transform:none}.elo-rv{opacity:1!important;transform:none!important}}
 </style>
 </head>
 <body>
+<div id="app" style="width:100%;box-sizing:border-box;">
 
-<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <div id="overlay" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:80;background:#F4F6F1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;"></div>
 
-<header>
-  <nav class="nav wrap" aria-label="Navegação principal">
-    <a href="#inicio" class="logo" aria-label="Elo, página inicial">
-      <svg class="elo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <circle cx="12" cy="16" r="8" stroke="var(--forest-900)" stroke-width="2.4"/>
-        <circle cx="20" cy="16" r="8" stroke="var(--gold-500)" stroke-width="2.4"/>
-      </svg>
-      Elo
+  <header style="max-width:1240px;margin:0 auto;padding:20px 24px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
+    <a href="#inicio" class="elo-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#10291F;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;">
+      <svg width="34" height="22" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#10291F" stroke-width="2.5"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2.5"></circle></svg>
+      <span>Elo</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="#como-funciona">Como funciona</a></li>
-      <li><a href="#categorias">Categorias</a></li>
-      <li><a href="#encontrar-ong">Encontrar ONG</a></li>
-      <li><a href="#para-ongs">Para ONGs e voluntários</a></li>
-    </ul>
-    <div class="nav-cta">
-      <a href="#" id="cta-ngo-header" class="btn btn-ghost">Sou uma ONG</a>
-      <a href="#" id="cta-header" class="btn btn-primary">Quero me voluntariar</a>
-      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
+    <nav aria-label="Principal" style="display:flex;flex-wrap:wrap;gap:4px 24px;font-size:15px;font-weight:500;">
+      <a href="#como-funciona" class="elo-link" style="text-decoration:none;">Como funciona</a>
+      <a href="#categorias" class="elo-link" style="text-decoration:none;">Categorias</a>
+      <a href="#encontrar-ong" class="elo-link" style="text-decoration:none;">Encontrar ONG</a>
+      <a href="#para-ongs" class="elo-link" style="text-decoration:none;">Para ONGs</a>
+    </nav>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <button type="button" data-action="openOng" class="elo-btn" style="display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #10291F;color:#10291F;background:none;font-weight:600;font-size:15px;box-sizing:border-box;">Sou uma ONG</button>
+      <button type="button" data-action="openVol" class="elo-btn" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;border:none;background:#10291F;color:#FFFFFF;font-weight:600;font-size:15px;box-sizing:border-box;">Quero me voluntariar</button>
     </div>
-  </nav>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#como-funciona">Como funciona</a>
-    <a href="#categorias">Categorias</a>
-    <a href="#encontrar-ong">Encontrar ONG</a>
-    <a href="#para-ongs">Para ONGs e voluntários</a>
-    <a href="#" id="cta-ngo-mobile" class="btn btn-ghost">Sou uma ONG</a>
-    <a href="#" id="cta-mobile" class="btn btn-primary">Quero me voluntariar</a>
-  </div>
-</header>
+  </header>
 
-<main id="conteudo">
-
-  <!-- HERO -->
-  <section class="hero" id="inicio">
-    <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow hero-eyebrow">
-          <svg class="elo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <circle cx="12" cy="16" r="7" stroke="currentColor" stroke-width="2"/>
-            <circle cx="20" cy="16" r="7" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          Rede de apoio direto
-        </span>
-        <h1>Cada ajuda tem um <em>elo</em> do outro lado.</h1>
-        <p class="lede">Elo conecta quem quer contribuir — com tempo, itens ou conhecimento — às ONGs que precisam exatamente disso, agora. Sem intermediários confusos, sem burocracia para começar.</p>
-        <div class="hero-actions">
-          <a href="#" id="cta-hero" class="btn btn-primary">Quero me voluntariar</a>
-          <a href="#como-funciona" class="btn btn-outline-light">Ver como funciona</a>
+  <main>
+    <section id="inicio" style="max-width:1240px;margin:8px auto 0;padding:0 24px;box-sizing:border-box;">
+      <div data-reveal="0" class="elo-rv" style="background:#10291F;color:#FFFFFF;border-radius:32px;padding:72px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px;">
+        <p style="margin:0;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);font-size:14px;font-weight:500;color:#E3EEE7;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#F2A63B;"></span>
+          Projeto acadêmico em fase piloto
+        </p>
+        <h1 style="margin:0;max-width:900px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(44px,7vw,96px);line-height:1;letter-spacing:-0.025em;">Cada ajuda tem um elo do outro lado.</h1>
+        <p style="margin:0;max-width:600px;font-size:19px;color:#CFE0D6;">O Elo aproxima quem quer contribuir com tempo, itens ou conhecimento das ONGs que precisam disso. O contato é direto com a organização.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;">
+          <button type="button" data-action="openVol" class="elo-btn" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:999px;border:none;background:#F2A63B;color:#10291F;font-weight:600;font-size:17px;box-sizing:border-box;">Quero me voluntariar</button>
+          <a href="#encontrar-ong" class="elo-btn" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:999px;border:1.5px solid rgba(255,255,255,0.5);color:#FFFFFF;text-decoration:none;font-weight:600;font-size:17px;box-sizing:border-box;">Encontrar uma ONG</a>
         </div>
-        <div class="hero-stats">
-          <div>
-            <strong id="stat-ong-count">—</strong>
-            <span>ONGs na rede hoje</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px;">
+        <div data-reveal="1" class="elo-rv" style="background:#FFFFFF;border-radius:20px;padding:22px 24px;display:flex;align-items:baseline;gap:12px;">
+          <span id="countCat" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;">0</span>
+          <span style="color:#3E4F47;font-size:15px;">categorias de apoio</span>
+        </div>
+        <div data-reveal="2" class="elo-rv" style="transition-delay:120ms;background:#FFFFFF;border-radius:20px;padding:22px 24px;display:flex;align-items:baseline;gap:12px;">
+          <span id="countOng" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;">0</span>
+          <span style="color:#3E4F47;font-size:15px;">ONGs de referência, como exemplo</span>
+        </div>
+        <div data-reveal="3" class="elo-rv" style="transition-delay:240ms;background:#FFFFFF;border-radius:20px;padding:22px 24px;display:flex;align-items:center;gap:12px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3F8361" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+          <span style="color:#3E4F47;font-size:15px;">Contato direto, sem intermediário guardando a doação</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="categorias" style="max-width:1240px;margin:0 auto;padding:112px 24px 0;box-sizing:border-box;overflow-x:clip;">
+      <div data-reveal="4" class="elo-rv" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 48px;margin-bottom:32px;">
+        <h2 style="margin:0;max-width:620px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-0.01em;">Escolha por onde você quer ajudar</h2>
+        <p style="margin:0;max-width:440px;color:#3E4F47;">O que cada ONG precisa muda toda semana. Role a página para conhecer as seis categorias.</p>
+      </div>
+      <div id="dimLayer" aria-hidden="true" style="position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(6,18,13,0.32);opacity:0;pointer-events:none;z-index:1;"></div>
+      <div id="elo-scrolly" style="position:relative;height:1900px;">
+        <div id="scrollyCard" style="position:sticky;top:24px;z-index:2;transform:scale(1);transform-origin:center top;will-change:transform;background:#10291F;color:#FFFFFF;border-radius:32px;padding:clamp(20px,4vw,48px);box-sizing:border-box;min-height:560px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 48px;">
+          <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:clamp(8px,1.2vw,16px);">
+            <p id="stepText" style="margin:0;font-size:13px;font-weight:600;color:#9FC4AF;">Categorias de apoio</p>
+            <h3 id="catTitle" aria-live="polite" style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(24px,3.6vw,48px);line-height:1.05;letter-spacing:-0.01em;">Seis formas de ajudar</h3>
+            <p id="catDesc" style="margin:0;max-width:420px;font-size:clamp(14px,1.5vw,18px);line-height:1.5;color:#CFE0D6;">Continue rolando para ver cada categoria. Ou passe o mouse sobre os balões.</p>
+            <span id="catTag" style="display:none;align-self:flex-start;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;"></span>
+            <div aria-hidden="true" id="bars" style="display:flex;gap:6px;margin-top:12px;max-width:280px;"></div>
           </div>
-          <div>
-            <strong>6</strong>
-            <span>categorias de apoio</span>
-          </div>
-          <div>
-            <strong>100%</strong>
-            <span>do contato é direto</span>
+          <div style="flex:999 1 420px;min-width:0;max-width:620px;margin:0 auto;">
+            <svg id="orbit" viewBox="0 0 640 500" fill="none" role="img" aria-label="As seis categorias de apoio ligadas ao Elo: Alimento, Matéria-prima, Profissionalização, Roupas e itens de casa, Saúde e bem-estar e Educação" style="width:100%;height:auto;display:block;">
+              <circle cx="320" cy="250" r="175" stroke="rgba(255,255,255,0.12)" stroke-width="1"></circle>
+              <circle cx="320" cy="250" r="100" stroke="rgba(255,255,255,0.1)" stroke-width="1"></circle>
+              <line class="elo-flow" x1="320" y1="250" x2="320" y2="100" stroke="rgba(242,166,59,0.35)" stroke-width="1.5"></line>
+              <line class="elo-flow" x1="320" y1="250" x2="455" y2="175" stroke="rgba(124,183,154,0.3)" stroke-width="1.5"></line>
+              <line class="elo-flow" x1="320" y1="250" x2="455" y2="325" stroke="rgba(242,166,59,0.35)" stroke-width="1.5"></line>
+              <line class="elo-flow" x1="320" y1="250" x2="320" y2="400" stroke="rgba(124,183,154,0.3)" stroke-width="1.5"></line>
+              <line class="elo-flow" x1="320" y1="250" x2="185" y2="325" stroke="rgba(242,166,59,0.35)" stroke-width="1.5"></line>
+              <line class="elo-flow" x1="320" y1="250" x2="185" y2="175" stroke="rgba(124,183,154,0.3)" stroke-width="1.5"></line>
+              <g class="elo-node"><circle cx="320" cy="250" r="50" fill="#F2A63B"></circle><circle cx="320" cy="250" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1"></circle></g>
+              <g class="elo-cats" id="eloCats">
+                <g class="elo-cat" data-i="0"><g class="elo-node n2"><circle cx="320" cy="100" r="18" fill="#3F8361"></circle></g><rect class="elo-tip" x="251" y="30" width="138" height="48" rx="24"></rect><text x="320" y="62" text-anchor="middle" font-size="24" font-weight="600" fill="#10291F">Alimento</text></g>
+                <g class="elo-cat" data-i="1"><g class="elo-node n3"><circle cx="455" cy="175" r="18" fill="#7CB79A"></circle></g><rect class="elo-tip" x="354" y="112" width="202" height="48" rx="24"></rect><text x="455" y="144" text-anchor="middle" font-size="24" font-weight="600" fill="#10291F">Matéria-prima</text></g>
+                <g class="elo-cat" data-i="2"><g class="elo-node n4"><circle cx="455" cy="325" r="18" fill="#DB8F24"></circle></g><rect class="elo-tip" x="340" y="342" width="266" height="48" rx="24"></rect><text x="473" y="374" text-anchor="middle" font-size="24" font-weight="600" fill="#10291F">Profissionalização</text></g>
+                <g class="elo-cat" data-i="3"><g class="elo-node n2"><circle cx="320" cy="400" r="18" fill="#1F4A38" stroke="#7CB79A" stroke-width="1.5"></circle></g><rect class="elo-tip" x="161" y="430" width="318" height="48" rx="24"></rect><text x="320" y="462" text-anchor="middle" font-size="24" font-weight="600" fill="#10291F">Roupas e itens de casa</text></g>
+                <g class="elo-cat" data-i="4"><g class="elo-node n3"><circle cx="185" cy="325" r="18" fill="#7CB79A"></circle></g><rect class="elo-tip" x="40" y="342" width="254" height="48" rx="24"></rect><text x="167" y="374" text-anchor="middle" font-size="24" font-weight="600" fill="#10291F">Saúde e bem-estar</text></g>
+                <g class="elo-cat" data-i="5"><g class="elo-node n4"><circle cx="185" cy="175" r="18" fill="#3F8361"></circle></g><rect class="elo-tip" x="116" y="112" width="138" height="48" rx="24"></rect><text x="185" y="144" text-anchor="middle" font-size="24" font-weight="600" fill="#10291F">Educação</text></g>
+              </g>
+            </svg>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="hero-visual" aria-hidden="true">
-        <svg class="elo-orbit" viewBox="0 0 400 400" fill="none">
-          <circle cx="200" cy="200" r="150" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-          <circle cx="200" cy="200" r="105" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-          <line class="elo-link" x1="200" y1="95" x2="200" y2="305" stroke="rgba(242,166,59,0.35)" stroke-width="1.5"/>
-          <line class="elo-link" x1="95" y1="200" x2="305" y2="200" stroke="rgba(242,166,59,0.35)" stroke-width="1.5"/>
-          <line class="elo-link" x1="128" y1="128" x2="272" y2="272" stroke="rgba(124,183,154,0.3)" stroke-width="1.5"/>
-          <line class="elo-link" x1="272" y1="128" x2="128" y2="272" stroke="rgba(124,183,154,0.3)" stroke-width="1.5"/>
+    <section id="como-funciona" style="max-width:1240px;margin:0 auto;padding:112px 24px 0;box-sizing:border-box;">
+      <h2 data-reveal="5" class="elo-rv" style="margin:0 0 40px;max-width:720px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-0.01em;">Três passos até o elo se fechar</h2>
+      <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+        <li data-reveal="6" class="elo-rv" style="border-top:2px solid #10291F;padding-top:20px;display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#3F8361;">1</span>
+          <h3 style="margin:0;font-size:21px;font-weight:600;">Você diz o que pode oferecer</h3>
+          <p style="margin:0;color:#3E4F47;">Tempo como voluntário, um item ou uma habilidade profissional. Você escolhe o que cabe na sua rotina.</p>
+        </li>
+        <li data-reveal="7" class="elo-rv" style="transition-delay:140ms;border-top:2px solid #10291F;padding-top:20px;display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#3F8361;">2</span>
+          <h3 style="margin:0;font-size:21px;font-weight:600;">A equipe aproxima você da ONG certa</h3>
+          <p style="margin:0;color:#3E4F47;">Cruzamos a sua oferta com o que as ONGs cadastradas precisam, por categoria e por região.</p>
+        </li>
+        <li data-reveal="8" class="elo-rv" style="transition-delay:280ms;border-top:2px solid #10291F;padding-top:20px;display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#3F8361;">3</span>
+          <h3 style="margin:0;font-size:21px;font-weight:600;">Vocês combinam direto</h3>
+          <p style="margin:0;color:#3E4F47;">Você e a ONG acertam os detalhes da entrega ou da atividade, sem ninguém no meio.</p>
+        </li>
+      </ol>
+    </section>
 
-          <g class="elo-node n1">
-            <circle cx="200" cy="200" r="46" fill="#F2A63B"/>
-            <circle cx="200" cy="200" r="46" fill="none" stroke="#fff" stroke-opacity="0.25" stroke-width="1"/>
-          </g>
-          <g class="elo-node n2">
-            <circle cx="200" cy="95" r="22" fill="#3F8361"/>
-          </g>
-          <g class="elo-node n3">
-            <circle cx="305" cy="200" r="18" fill="#7CB79A"/>
-          </g>
-          <g class="elo-node n4">
-            <circle cx="200" cy="305" r="16" fill="#1F4A38" stroke="#7CB79A" stroke-width="1.5"/>
-          </g>
-          <g class="elo-node n2">
-            <circle cx="95" cy="200" r="14" fill="#DB8F24"/>
-          </g>
-        </svg>
+    <section id="encontrar-ong" style="max-width:1240px;margin:0 auto;padding:112px 24px 0;box-sizing:border-box;">
+      <div data-reveal="9" class="elo-rv" style="background:#FFFFFF;border-radius:32px;padding:48px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-0.01em;">Encontre uma ONG</h2>
+          <p style="margin:0;max-width:640px;color:#3E4F47;">Filtre por categoria. Por enquanto a lista traz organizações reais usadas como referência: elas ainda não foram contatadas e não têm vínculo com o projeto.</p>
+        </div>
+        <div role="group" aria-label="Filtrar por categoria" id="pills" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+        <p role="status" id="countText" style="margin:0;font-size:15px;color:#3E4F47;"></p>
+        <div id="ongGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;"></div>
+        <div id="ongEmpty" style="display:none;border:1.5px dashed #B9C8BE;border-radius:24px;padding:28px;flex-direction:column;gap:8px;">
+          <h3 style="margin:0;font-size:20px;font-weight:600;">Ainda não há ONG nesta categoria</h3>
+          <p style="margin:0;color:#3E4F47;">Ela está em curadoria. Registre o que você procura e a equipe avisa quando houver uma organização.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-top:24px;border-top:1px solid #E1E7E1;">
+          <p style="margin:0;max-width:620px;color:#3E4F47;">Não encontrou o que precisa? Cadastre a sua necessidade e a equipe procura quem possa ajudar.</p>
+          <a href="#" class="elo-btn" style="display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:48px;padding:10px 24px;box-sizing:border-box;border-radius:999px;border:1.5px solid #10291F;color:#10291F;text-decoration:none;font-weight:600;line-height:1.3;">Cadastrar minha necessidade</a>
+        </div>
       </div>
+    </section>
+
+    <section id="para-ongs" style="max-width:1240px;margin:0 auto;padding:112px 24px 0;box-sizing:border-box;">
+      <h2 data-reveal="10" class="elo-rv" style="margin:0 0 40px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-0.01em;">Para quem oferece e para quem precisa</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;">
+        <div data-reveal="11" class="elo-rv" style="background:#FFFFFF;border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:16px;">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700;">Sou voluntário ou doador</h3>
+          <p style="margin:0;color:#3E4F47;flex-grow:1;">Conte o que você pode oferecer, tempo, item ou conhecimento, e onde você está.</p>
+          <button type="button" data-action="openVol" class="elo-btn" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:52px;padding:0 24px;border-radius:999px;border:none;background:#10291F;color:#FFFFFF;font-weight:600;">Quero me voluntariar</button>
+        </div>
+        <div data-reveal="12" class="elo-rv" style="transition-delay:140ms;background:#10291F;color:#FFFFFF;border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:16px;">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700;">Represento uma ONG</h3>
+          <p style="margin:0;color:#CFE0D6;flex-grow:1;">Cadastre a sua organização e conte o que falta agora. A ONG só aparece na página com autorização.</p>
+          <button type="button" data-action="openOng" class="elo-btn" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:52px;padding:0 24px;border-radius:999px;border:none;background:#F2A63B;color:#10291F;font-weight:600;">Cadastrar minha ONG</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-reveal="13" class="elo-rv" style="max-width:1240px;margin:0 auto;padding:112px 24px;box-sizing:border-box;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;">
+      <svg width="68" height="44" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#10291F" stroke-width="2"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2"></circle></svg>
+      <h2 style="margin:0;max-width:760px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(36px,5vw,60px);line-height:1.05;letter-spacing:-0.02em;">Seu próximo gesto pode fechar um elo</h2>
+      <p style="margin:0;max-width:520px;color:#3E4F47;">Leva poucos minutos. Preencha o formulário e a equipe aproxima você da ONG certa.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
+        <button type="button" data-action="openVol" class="elo-btn" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:999px;border:none;background:#10291F;color:#FFFFFF;font-weight:600;">Quero me voluntariar</button>
+        <button type="button" data-action="openOng" class="elo-btn" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:999px;border:1.5px solid #10291F;color:#10291F;background:none;font-weight:600;">Sou uma ONG</button>
+      </div>
+    </section>
+  </main>
+
+  <footer style="background:#10291F;color:#CFE0D6;">
+    <div style="max-width:1240px;margin:0 auto;padding:48px 24px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;">
+      <div style="display:flex;align-items:center;gap:10px;color:#FFFFFF;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;">
+        <svg width="34" height="22" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#FFFFFF" stroke-width="2.5"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2.5"></circle></svg>
+        <span>Elo</span>
+      </div>
+      <p style="margin:0;max-width:640px;font-size:14px;">O Elo é um projeto acadêmico de extensão de estudantes de Engenharia do Centro Universitário ETEP, em fase piloto. As ONGs listadas são exemplos públicos de referência, ainda não contatadas e sem vínculo com o projeto.</p>
     </div>
-  </section>
-
-  <!-- COMO FUNCIONA (sequência real, por isso numerado) -->
-  <section class="how" id="como-funciona">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">
-          <svg class="elo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <circle cx="12" cy="16" r="7" stroke="var(--moss-500)" stroke-width="2"/>
-            <circle cx="20" cy="16" r="7" stroke="var(--moss-500)" stroke-width="2"/>
-          </svg>
-          O caminho até o elo se fechar
-        </span>
-        <h2>Três passos, do seu lado da tela ao dia a dia de uma ONG.</h2>
-      </div>
-      <div class="how-steps">
-        <div class="how-step">
-          <span class="num">01<span class="dash"></span></span>
-          <h3>Você diz o que pode oferecer</h3>
-          <p>Tempo como voluntário, um item específico ou uma habilidade profissional — você escolhe o formato de ajuda que cabe na sua rotina.</p>
-        </div>
-        <div class="how-step">
-          <span class="num">02<span class="dash"></span></span>
-          <h3>A gente aproxima das ONGs certas</h3>
-          <p>Cruzamos sua oferta com as necessidades reais e atuais de ONGs cadastradas na sua região ou área de interesse.</p>
-        </div>
-        <div class="how-step">
-          <span class="num">03<span class="dash"></span></span>
-          <h3>O contato acontece direto</h3>
-          <p>Sem intermediário guardando sua doação. Você e a ONG combinam os detalhes, e o elo se fecha de verdade.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CATEGORIAS -->
-  <section id="categorias">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">
-          <svg class="elo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <circle cx="12" cy="16" r="7" stroke="var(--moss-500)" stroke-width="2"/>
-            <circle cx="20" cy="16" r="7" stroke="var(--moss-500)" stroke-width="2"/>
-          </svg>
-          O que cada ONG precisa muda toda semana
-        </span>
-        <h2>Escolha por onde você quer ajudar.</h2>
-        <p>Hoje você pode se voluntariar em qualquer uma dessas frentes. Em breve, cada categoria vai mostrar exatamente quais ONGs precisam do quê, em tempo real.</p>
-      </div>
-
-      <div class="cat-grid">
-
-        <div class="cat-card">
-          <div class="cat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11c0-4 3-8 9-8s9 4 9 8-4 6-9 6-9-2-9-6Z"/><path d="M8 21h8"/><path d="M10 17l1 4M14 17l-1 4"/></svg>
-          </div>
-          <h3>Alimento</h3>
-          <p>Doações de cesta básica, campanhas de arrecadação e apoio a cozinhas comunitárias.</p>
-          <span class="cat-tag live">ONG parceira confirmada</span>
-        </div>
-
-        <div class="cat-card">
-          <div class="cat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
-          </div>
-          <h3>Matéria-prima</h3>
-          <p>Tecido, madeira, material de construção e insumos para projetos e oficinas locais.</p>
-          <span class="cat-tag soon">Em curadoria</span>
-        </div>
-
-        <div class="cat-card">
-          <div class="cat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="5"/></svg>
-          </div>
-          <h3>Profissionalização</h3>
-          <p>Aulas, mentorias e oficinas para quem está entrando ou voltando ao mercado de trabalho.</p>
-          <span class="cat-tag live">ONG parceira confirmada</span>
-        </div>
-
-        <div class="cat-card">
-          <div class="cat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v14H8l-4 4V4Z"/></svg>
-          </div>
-          <h3>Roupas e itens de casa</h3>
-          <p>Peças em bom estado, roupa de cama e utensílios para famílias em situação de vulnerabilidade.</p>
-          <span class="cat-tag soon">Em curadoria</span>
-        </div>
-
-        <div class="cat-card">
-          <div class="cat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 5 6.5 5c2 0 3.3 1 5.5 3 2.2-2 3.5-3 5.5-3C21 5 23.5 8.5 21.5 12.5 19 16.65 12 21 12 21Z"/></svg>
-          </div>
-          <h3>Saúde e bem-estar</h3>
-          <p>Atendimentos, medicamentos básicos e apoio psicológico voluntário para comunidades.</p>
-          <span class="cat-tag soon">Em curadoria</span>
-        </div>
-
-        <div class="cat-card">
-          <div class="cat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          </div>
-          <h3>Educação</h3>
-          <p>Livros, material escolar e reforço para crianças e jovens acompanhados por ONGs parceiras.</p>
-          <span class="cat-tag soon">Em curadoria</span>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ENCONTRE UMA ONG PERTO DE VOCÊ -->
-  <section id="encontrar-ong" class="finder">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">
-          <svg class="elo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <circle cx="12" cy="16" r="7" stroke="var(--moss-500)" stroke-width="2"/>
-            <circle cx="20" cy="16" r="7" stroke="var(--moss-500)" stroke-width="2"/>
-          </svg>
-          A rede em ação
-        </span>
-        <h2>Encontre uma ONG perto de você.</h2>
-        <p>Filtre por categoria ou cidade, ou deixe a página priorizar as ONGs mais próximas de onde você está. Ao encontrar uma, o contato é direto com a organização.</p>
-      </div>
-
-      <div class="finder-controls">
-        <button type="button" id="btn-geo" class="btn btn-ghost">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-          Usar minha localização
-        </button>
-
-        <label class="finder-field">
-          <span>Categoria</span>
-          <select id="filter-categoria">
-            <option value="todas">Todas as categorias</option>
-            <option value="alimento">Alimento</option>
-            <option value="materia-prima">Matéria-prima</option>
-            <option value="profissionalizacao">Profissionalização</option>
-            <option value="roupas">Roupas e itens de casa</option>
-            <option value="saude">Saúde e bem-estar</option>
-            <option value="educacao">Educação</option>
-          </select>
-        </label>
-
-        <label class="finder-field">
-          <span>Cidade</span>
-          <input type="text" id="filter-cidade" placeholder="Ex: São Paulo">
-        </label>
-      </div>
-
-      <p id="finder-status" class="finder-status" role="status" aria-live="polite"></p>
-
-      <div id="finder-results" class="finder-grid"></div>
-
-      <div class="finder-cta">
-        <p>Não encontrou o que precisa? Cadastre sua necessidade — quando uma ONG ou voluntário puder atender, o contato parte deles até você.</p>
-        <a href="#" id="cta-necessidade" class="btn btn-ghost">Cadastrar minha necessidade</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- DOIS CAMINHOS -->
-  <section class="paths" id="para-ongs">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Dois lados do mesmo elo</span>
-        <h2>Feito para quem oferece e para quem precisa.</h2>
-        <p>A Elo é uma ponte de mão dupla. Escolha o seu papel para começar.</p>
-      </div>
-      <div class="path-grid">
-        <div class="path-card">
-          <h3>Sou voluntário ou doador</h3>
-          <p>Diga o que você pode oferecer — tempo, item ou conhecimento — e receba oportunidades reais de ONGs perto de você.</p>
-          <a href="#" id="cta-path-volunteer" class="btn btn-primary">Quero me voluntariar</a>
-        </div>
-        <div class="path-card">
-          <h3>Represento uma ONG</h3>
-          <p>Cadastre sua organização e conte o que falta agora. Sua necessidade chega a quem pode resolver, sem burocracia.</p>
-          <a href="#" id="cta-ngo-path" class="btn btn-outline-light">Cadastrar minha ONG</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA FINAL -->
-  <section class="cta-final">
-    <div class="wrap">
-      <span class="eyebrow">Leva menos de 2 minutos</span>
-      <h2>Seu próximo gesto pode fechar um elo hoje.</h2>
-      <p>Preencha um formulário rápido e a gente te aproxima da ONG certa para o que você quer oferecer.</p>
-      <div class="hero-actions">
-        <a href="#" id="cta-final" class="btn btn-primary">Quero me voluntariar</a>
-        <a href="#" id="cta-ngo-final" class="btn btn-ghost">Sou uma ONG</a>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-logo">
-        <svg class="elo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <circle cx="12" cy="16" r="7" stroke="#fff" stroke-width="2"/>
-          <circle cx="20" cy="16" r="7" stroke="#F2A63B" stroke-width="2"/>
-        </svg>
-        Elo
-      </div>
-      <ul class="footer-links">
-        <li><a href="#como-funciona">Como funciona</a></li>
-        <li><a href="#categorias">Categorias</a></li>
-        <li><a href="#para-ongs">Para ONGs</a></li>
-      </ul>
-    </div>
-    <p class="footer-note">Elo é um projeto acadêmico multidisciplinar criado por um grupo de alunos de Engenharia do Centro Universitário ETEP de São José dos Campos - SP, para conectar pessoas a ONGs. Página em fase inicial — o cadastro completo de doadores por segmento chega em breve.</p>
-  </div>
-</footer>
+  </footer>
+</div>
 
 <script>
-  // ======= CONFIGURAÇÃO DOS LINKS =======
-  // Formulário para voluntários e doadores (pessoas físicas)
-  const GOOGLE_FORM_URL = "https://forms.gle/bms6sjG5ZPNtuWGeA";
-  // Formulário para ONGs que querem se cadastrar
-  const GOOGLE_FORM_NGO_URL = "https://forms.gle/A1VnfUa1MXgjd2eh7";
-  // Formulário para quem procurou e não encontrou o que precisava (ainda a criar)
-  const GOOGLE_FORM_NEED_URL = "https://forms.gle/dTmY1d8uP2MDZKzn6";
+(function () {
+  'use strict';
 
-  document.querySelectorAll('#cta-header, #cta-mobile, #cta-hero, #cta-path-volunteer, #cta-final')
-    .forEach(el => {
-      el.setAttribute('href', GOOGLE_FORM_URL);
-      el.setAttribute('target', '_blank');
-      el.setAttribute('rel', 'noopener noreferrer');
-    });
+  var CAT_INFO = [
+    { id: 'alimento', label: 'Alimento', desc: 'Cestas básicas, campanhas de arrecadação e apoio a cozinhas comunitárias.', tag: 'Com ONG de referência', ready: true },
+    { id: 'materia-prima', label: 'Matéria-prima', desc: 'Tecido, madeira, material de construção e insumos para projetos e oficinas.', tag: 'Em curadoria', ready: false },
+    { id: 'profissionalizacao', label: 'Profissionalização', desc: 'Aulas, mentorias e oficinas para quem está entrando ou voltando ao mercado de trabalho.', tag: 'Com ONG de referência', ready: true },
+    { id: 'roupas', label: 'Roupas e itens de casa', desc: 'Peças em bom estado, roupa de cama e utensílios para famílias em situação de vulnerabilidade.', tag: 'Com ONG de referência', ready: true },
+    { id: 'saude', label: 'Saúde e bem-estar', desc: 'Atendimentos, medicamentos básicos e apoio psicológico voluntário para comunidades.', tag: 'Com ONG de referência', ready: true },
+    { id: 'educacao', label: 'Educação', desc: 'Livros, material escolar e reforço para crianças e jovens.', tag: 'Com ONG de referência', ready: true }
+  ];
+  var LABELS = {}; CAT_INFO.forEach(function (c) { LABELS[c.id] = c.label; });
 
-  document.querySelectorAll('#cta-ngo-header, #cta-ngo-mobile, #cta-ngo-path, #cta-ngo-final')
-    .forEach(el => {
-      el.setAttribute('href', GOOGLE_FORM_NGO_URL);
-      el.setAttribute('target', '_blank');
-      el.setAttribute('rel', 'noopener noreferrer');
-    });
-
-  document.getElementById('cta-necessidade').setAttribute('href', GOOGLE_FORM_NEED_URL);
-  document.getElementById('cta-necessidade').setAttribute('target', '_blank');
-  document.getElementById('cta-necessidade').setAttribute('rel', 'noopener noreferrer');
-
-  // ======= DIRETÓRIO DE ONGs =======
-  // Cada ONG tem: nome, categoria, cidade, latitude/longitude e um único campo
-  // "contato" — um link para o canal mais confiável que a ONG disponibiliza
-  // publicamente (site institucional, e-mail ou telefone/WhatsApp oficial).
-  // Nunca um contato pessoal. O texto do botão não cita o tipo de canal de propósito,
-  // porque o canal muda de ONG para ONG.
-  //
-  // ⚠️ Só existem 2 ONGs aqui porque foram as únicas que verifiquei com confiança
-  // (nome, atuação, tempo de existência e canal oficial) nesta pesquisa. As outras
-  // 4 categorias estão propositalmente vazias até termos parceiros verificados —
-  // ver observações no final da conversa sobre como preencher isso com segurança.
-  const ONGS = [
-    {
-      nome: "ONG Banco de Alimentos",
-      categoria: "alimento",
-      cidade: "São Paulo, SP (Vila Maria)",
-      lat: -23.5080, lng: -46.5800, // aproximado — confirmar endereço exato antes de produção
-      contato: "https://bancodealimentos.org.br/",
-      desc: "Fundada em 1998, coleta alimentos fora do padrão comercial e distribui a entidades sociais cadastradas. 28 anos de atuação, com relatórios de transparência públicos."
-    },
-    {
-      nome: "Instituto PROA",
-      categoria: "profissionalizacao",
-      cidade: "São Paulo, SP (atuação em vários estados)",
-      lat: -23.5505, lng: -46.6333,
-      contato: "https://www.proa.org.br/",
-      desc: "Fundado em 2007, oferece cursos profissionalizantes gratuitos para jovens de escola pública. Já impactou mais de 36 mil alunos."
-    },
+  var ONGS = [
+    { nome: 'ONG Banco de Alimentos', categoria: 'alimento', cidade: 'São Paulo, SP (Vila Maria)', site: 'https://bancodealimentos.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=ONG+Banco+de+Alimentos+S%C3%A3o+Paulo', desc: 'Fundada em 1998, coleta alimentos fora do padrão comercial e distribui a entidades sociais cadastradas.' },
+    { nome: 'Instituto PROA', categoria: 'profissionalizacao', cidade: 'São Paulo, SP (atuação em vários estados)', site: 'https://www.proa.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Instituto+PROA+S%C3%A3o+Paulo', desc: 'Fundado em 2007, oferece cursos profissionalizantes gratuitos para jovens de escola pública.' },
+    { nome: 'Amigos do Bem', categoria: 'educacao', cidade: 'Sertão de PE, AL e CE', site: 'https://amigosdobem.org/', mapa: 'https://www.google.com/maps/search/?api=1&query=Amigos+do+Bem+Catimbau+PE', desc: 'Fundada em 1993, atua no sertão nordestino com projetos de educação, água, moradia, saúde e geração de renda.' },
+    { nome: 'Pequeno Cotolengo do Paraná', categoria: 'saude', cidade: 'Curitiba, PR', site: 'https://www.pequenocotolengo.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Pequeno+Cotolengo+Curitiba', desc: 'Fundado em 1965, oferece acolhimento, saúde e educação gratuitos para pessoas com múltiplas deficiências.' },
+    { nome: 'Exército de Salvação Brasil', categoria: 'roupas', cidade: 'São Paulo, SP (Bosque da Saúde)', site: 'https://www.exercitodesalvacao.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Ex%C3%A9rcito+de+Salva%C3%A7%C3%A3o+Rua+Ju%C3%A1+264+S%C3%A3o+Paulo', desc: 'Atua no Brasil desde 1922. Recebe doação de roupas, móveis e outros itens usados para redistribuir a famílias em situação de vulnerabilidade.' }
   ];
 
-  // Voluntários aprovados e dispostos a atender quando ainda não há ONG
-  // cadastrada naquela categoria/região. Mesma lógica de honestidade das
-  // ONGs: fica vazio até existir gente real e aprovada vinda do formulário.
-  //
-  // Campo "desde" é texto livre (ex: "voluntário há 2 anos") — vem da
-  // pergunta "experiências anteriores" do formulário, resumida por você
-  // na hora de aprovar.
-  //
-  // ⚠️ Por segurança, o contato do voluntário NÃO é exposto publicamente
-  // aqui (diferente da ONG). Em vez de um link direto, o botão da pessoa
-  // envia um e-mail para o ADMIN_EMAIL abaixo, que faz a ponte manualmente.
-  const VOLUNTARIOS = [];
-  const ADMIN_EMAIL = "seu-email@exemplo.com"; // troque pelo seu e-mail real
-
-  const CATEGORIA_LABEL = {
-    "alimento": "Alimento",
-    "materia-prima": "Matéria-prima",
-    "profissionalizacao": "Profissionalização",
-    "roupas": "Roupas e itens de casa",
-    "saude": "Saúde e bem-estar",
-    "educacao": "Educação",
+  var CAT_LABELS_FORM = {
+    educacao: 'Educação (Livros / Material escolar / Aulas / etc...)',
+    doador: 'Doador (Alimento / Matéria-prima / Roupas e itens de casa)',
+    mercado: 'Voltado ao mercado de trabalho (Profissionalização / Mentoria / etc...)',
+    saude: 'Saúde e bem-estar (Mentalmente / Fisicamente / etc...)'
   };
+  var CAT_DEFS_FORM = [
+    { id: 'educacao', label: CAT_LABELS_FORM.educacao },
+    { id: 'doador', label: CAT_LABELS_FORM.doador },
+    { id: 'mercado', label: CAT_LABELS_FORM.mercado },
+    { id: 'saude', label: CAT_LABELS_FORM.saude }
+  ];
+  var FIND_OPTIONS = ['LinkedIn', 'Facebook', 'Instagram', 'Sites de pesquisa', 'Indicação de um amigo', 'Feira da ETEP'];
+  var VOL_FORM_ID = '1FAIpQLSeltiiBUB-HuyFtrA2CciHz_VZ4l9LhwU5PVsbvZmap2v-L7w';
+  var ONG_FORM_ID = '1FAIpQLSf9kG0ynGwxSiys2UmmCNd86KGt9FujaJd__EBGrcP7dZ2A8Q';
 
-  document.getElementById('stat-ong-count').textContent = ONGS.length;
-
-  let userCoords = null; // { lat, lng } quando o usuário autoriza a localização
-
-  // Fórmula de Haversine: distância em km entre duas coordenadas
-  function distanciaKm(lat1, lng1, lat2, lng2){
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
   }
 
-  function aplicarFiltrosEDistancia(lista){
-    const categoriaSelecionada = document.getElementById('filter-categoria').value;
-    const cidadeBusca = document.getElementById('filter-cidade').value.trim().toLowerCase();
+  var state = {
+    cat: 'todas',
+    ovStage: 'closed', ovType: 'voluntario', ovErrors: false,
+    ovNome: '', ovNomeOrg: '', ovCnpj: '', ovLocal: '', ovEmail: '', ovTelefone: '', ovSite: '',
+    ovCats: {}, ovExp: '', ovMotivo: '', ovComoEncontrou: '', ovFeedback: '',
+    ovCountdown: 5
+  };
+  var ovTimer = null;
+  var countedCat = false, countedOng = false;
 
-    let filtrada = lista.filter(item => {
-      const bateCategoria = categoriaSelecionada === 'todas' || item.categoria === categoriaSelecionada;
-      const bateCidade = !cidadeBusca || item.cidade.toLowerCase().includes(cidadeBusca);
-      return bateCategoria && bateCidade;
-    });
+  function setState(patch) {
+    Object.assign(state, patch);
+    render();
+  }
 
-    filtrada = filtrada.map(item => {
-      const dist = userCoords ? distanciaKm(userCoords.lat, userCoords.lng, item.lat, item.lng) : null;
-      return { ...item, dist };
-    });
+  // ---------- Overlay (fake "another page") ----------
+  function openOverlay(type) {
+    state.ovStage = 'form';
+    state.ovType = type;
+    state.ovErrors = false;
+    state.ovNome = ''; state.ovNomeOrg = ''; state.ovCnpj = ''; state.ovLocal = '';
+    state.ovEmail = ''; state.ovTelefone = ''; state.ovSite = '';
+    state.ovCats = {}; state.ovExp = ''; state.ovMotivo = ''; state.ovComoEncontrou = ''; state.ovFeedback = '';
+    render();
+    document.body.style.overflow = 'hidden';
+  }
+  function closeOverlay() {
+    if (ovTimer) { clearInterval(ovTimer); ovTimer = null; }
+    state.ovStage = 'closed';
+    document.body.style.overflow = '';
+    render();
+  }
+  function submitOverlay() {
+    var isOng = state.ovType === 'ong';
+    var catSelected = Object.keys(state.ovCats).filter(function (k) { return state.ovCats[k]; });
+    var required = [state.ovNome, state.ovLocal, state.ovEmail, state.ovTelefone, state.ovExp, state.ovMotivo];
+    if (isOng) { required = required.concat([state.ovNomeOrg, state.ovCnpj]); }
+    var missing = required.some(function (v) { return !v || !String(v).trim(); }) || catSelected.length === 0;
+    if (missing) { state.ovErrors = true; render(); return; }
 
-    if (userCoords){
-      filtrada.sort((a, b) => a.dist - b.dist);
+    var params = [];
+    var add = function (id, val) { if (val) { params.push('entry.' + id + '=' + encodeURIComponent(val)); } };
+    var formId, expLabels;
+    if (isOng) {
+      formId = ONG_FORM_ID;
+      expLabels = { a: 'Sim, ao menos uma experiência anterior.', b: 'Sim, algumas experiências anteriores.', c: 'Sim, muitas experiências anteriores.', d: 'Não temos nenhuma experiência anterior com outras plataformas.' };
+      add(1781500597, state.ovNome);
+      add(581749298, String(state.ovCnpj).replace(/\D/g, ''));
+      add(73296940, state.ovLocal);
+      add(1640447617, state.ovEmail);
+      add(297979220, state.ovTelefone);
+      add(70640338, state.ovSite);
+      catSelected.forEach(function (c) { add(1078004677, CAT_LABELS_FORM[c]); });
+      add(60559293, expLabels[state.ovExp]);
+      add(1764284648, state.ovMotivo);
+      add(1935206665, state.ovComoEncontrou);
+      add(200103194, state.ovFeedback);
     } else {
-      filtrada.sort((a, b) => a.nome.localeCompare(b.nome));
+      formId = VOL_FORM_ID;
+      expLabels = { a: 'Sim, ao menos uma experiência anterior.', b: 'Sim, algumas experiências anteriores.', c: 'Sim, muitas experiências anteriores.', d: 'Não possuo nenhuma experiência anterior como voluntariado.' };
+      add(1781500597, state.ovNome);
+      add(1333402015, state.ovLocal);
+      add(1640447617, state.ovEmail);
+      add(297979220, state.ovTelefone);
+      add(1173090801, state.ovSite);
+      catSelected.forEach(function (c) { add(1078004677, CAT_LABELS_FORM[c]); });
+      add(60559293, expLabels[state.ovExp]);
+      add(1935206665, state.ovMotivo);
+      add(324271424, state.ovComoEncontrou);
+      add(1106309712, state.ovFeedback);
     }
+    var url = 'https://docs.google.com/forms/d/e/' + formId + '/viewform?usp=pp_url&' + params.join('&');
+    try { window.open(url, '_blank', 'noopener'); } catch (e) {}
 
-    return filtrada;
-  }
-
-  function linkMapa(lat, lng){
-    return `https://www.google.com/maps?q=${lat},${lng}`;
-  }
-
-  function cardONG(ong){
-    const card = document.createElement('div');
-    card.className = 'finder-card';
-    card.innerHTML = `
-      <h3>${ong.nome}</h3>
-      <div class="finder-meta">
-        <span>${CATEGORIA_LABEL[ong.categoria]}</span>
-        <span>${ong.cidade}</span>
-      </div>
-      ${ong.dist !== null ? `<span class="finder-dist">~ ${ong.dist.toFixed(1)} km de você</span>` : ''}
-      <p class="desc">${ong.desc}</p>
-      <div class="finder-actions">
-        <a href="${ong.contato}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Falar com a ONG</a>
-        <a href="${linkMapa(ong.lat, ong.lng)}" target="_blank" rel="noopener noreferrer" class="btn-maps">Ver no mapa</a>
-      </div>
-    `;
-    return card;
-  }
-
-  // Mostra só o primeiro nome + inicial do sobrenome, mesmo que o dado
-  // completo esteja na planilha — proteção automática, não depende de
-  // ninguém lembrar de abreviar manualmente ao aprovar.
-  function abreviarNome(nomeCompleto){
-    const partes = nomeCompleto.trim().split(/\s+/);
-    if (partes.length === 1) return partes[0];
-    return partes[0] + ' ' + partes[partes.length - 1].charAt(0) + '.';
-  }
-
-  function cardVoluntario(vol){
-    const card = document.createElement('div');
-    card.className = 'finder-card finder-card-volunteer';
-    const nomeExibido = abreviarNome(vol.nome);
-    const assunto = encodeURIComponent('Quero falar com ' + nomeExibido + ' (voluntário Elo)');
-    card.innerHTML = `
-      <span class="finder-badge">Voluntário disponível</span>
-      <h3>${nomeExibido}</h3>
-      <div class="finder-meta">
-        <span>${CATEGORIA_LABEL[vol.categoria]}</span>
-        <span>${vol.cidade}</span>
-      </div>
-      ${vol.dist !== null ? `<span class="finder-dist">~ ${vol.dist.toFixed(1)} km de você</span>` : ''}
-      <p class="desc">${vol.desde || ''} Ainda não há ONG cadastrada nessa categoria/região — mas esta pessoa se ofereceu para ajudar.</p>
-      <div class="finder-actions">
-        <a href="mailto:${ADMIN_EMAIL}?subject=${assunto}" class="btn btn-ghost">Quero ser conectado(a)</a>
-        <a href="${linkMapa(vol.lat, vol.lng)}" target="_blank" rel="noopener noreferrer" class="btn-maps">Ver no mapa</a>
-      </div>
-    `;
-    return card;
-  }
-
-  function renderResultados(){
-    const container = document.getElementById('finder-results');
-    const status = document.getElementById('finder-status');
-    container.innerHTML = '';
-
-    const baseMsg = userCoords ? 'Mostrando os resultados mais próximos de você primeiro.' : '';
-    const ongsFiltradas = aplicarFiltrosEDistancia(ONGS);
-
-    if (ongsFiltradas.length > 0){
-      status.textContent = baseMsg;
-      ongsFiltradas.forEach(ong => container.appendChild(cardONG(ong)));
-      return;
-    }
-
-    // Nenhuma ONG bateu com o filtro — tenta achar voluntário disponível
-    const volsFiltrados = aplicarFiltrosEDistancia(VOLUNTARIOS);
-
-    if (volsFiltrados.length > 0){
-      status.textContent = (baseMsg ? baseMsg + ' ' : '') + 'Ainda não há ONG cadastrada com esses filtros, mas há voluntários disponíveis:';
-      volsFiltrados.forEach(vol => container.appendChild(cardVoluntario(vol)));
-      return;
-    }
-
-    status.textContent = baseMsg;
-    container.innerHTML = '<p class="finder-empty">Nenhuma ONG ou voluntário encontrado com esses filtros ainda. Tente outra categoria ou cidade, ou cadastre sua necessidade abaixo.</p>';
-  }
-
-  document.getElementById('filter-categoria').addEventListener('change', renderResultados);
-  document.getElementById('filter-cidade').addEventListener('input', renderResultados);
-
-  document.getElementById('btn-geo').addEventListener('click', () => {
-    const status = document.getElementById('finder-status');
-    const btn = document.getElementById('btn-geo');
-
-    if (!navigator.geolocation){
-      status.textContent = 'Seu navegador não suporta localização automática. Use o filtro de cidade acima.';
-      return;
-    }
-
-    status.textContent = 'Buscando sua localização...';
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        btn.classList.add('active');
-        renderResultados();
-      },
-      () => {
-        status.textContent = 'Não conseguimos acessar sua localização. Você pode permitir o acesso pelo navegador ou usar o filtro de cidade.';
+    if (ovTimer) { clearInterval(ovTimer); }
+    state.ovStage = 'thanks';
+    state.ovCountdown = 5;
+    render();
+    ovTimer = setInterval(function () {
+      state.ovCountdown -= 1;
+      if (state.ovCountdown <= 0) {
+        clearInterval(ovTimer); ovTimer = null;
+        closeOverlay();
+      } else {
+        render();
       }
-    );
-  });
+    }, 1000);
+  }
 
-  renderResultados();
+  function renderOverlay() {
+    var el = document.getElementById('overlay');
+    if (state.ovStage === 'closed') { el.style.display = 'none'; el.innerHTML = ''; return; }
+    el.style.display = 'block';
+    var isOng = state.ovType === 'ong';
 
-  // Menu mobile
-  const navToggle = document.getElementById('navToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
-  navToggle.addEventListener('click', () => {
-    const isOpen = mobileMenu.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', String(isOpen));
-  });
-  mobileMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
-      navToggle.setAttribute('aria-expanded', 'false');
+    if (state.ovStage === 'thanks') {
+      el.innerHTML =
+        '<div style="max-width:720px;margin:0 auto;padding:32px 24px 96px;box-sizing:border-box;min-height:100%;">' +
+        '<div style="min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px;">' +
+        '<div style="width:64px;height:64px;border-radius:50%;background:#CFE3D6;display:flex;align-items:center;justify-content:center;">' +
+        '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10291F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>' +
+        '</div>' +
+        '<h2 style="margin:0;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:clamp(28px,4vw,40px);">Cadastro enviado!</h2>' +
+        '<p style="margin:0;max-width:460px;color:#3E4F47;">Abrimos uma aba com os seus dados já preenchidos na confirmação final — é só clicar em "Enviar" lá pra concluir. Voltando para a página inicial em ' + state.ovCountdown + 's...</p>' +
+        '<button type="button" data-action="closeOverlay" class="elo-btn" style="display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #10291F;color:#10291F;background:none;font-weight:600;font-size:15px;">Voltar agora</button>' +
+        '</div></div>';
+      return;
+    }
+
+    var title = isOng ? 'Cadastre sua ONG' : 'Quero me voluntariar';
+    var subtitle = isOng ? 'Conte quem é a organização e o que ela precisa. A ONG só aparece na página com autorização.' : 'Conte o que você pode oferecer, tempo, item ou conhecimento, e onde você está.';
+    var siteLabel = isOng ? 'Site ou rede social oficial da organização (opcional)' : 'Seu site ou rede social (opcional)';
+    var catLabel = isOng ? 'Quais opções a organização melhor se encaixa?' : 'Para quais causas você quer ajudar?';
+    var expLabel = isOng ? 'A organização já tem experiência com outras plataformas?' : 'Você já tem experiência como voluntário(a)?';
+    var motivoLabel = isOng ? 'O que mais chamou atenção pra se cadastrar com a gente?' : 'Por que você quer se voluntariar?';
+    var lastExp = isOng ? 'Não temos nenhuma experiência anterior com outras plataformas.' : 'Não possuo nenhuma experiência anterior como voluntariado.';
+    var expDefs = [
+      { id: 'a', label: 'Sim, ao menos uma experiência anterior.' },
+      { id: 'b', label: 'Sim, algumas experiências anteriores.' },
+      { id: 'c', label: 'Sim, muitas experiências anteriores.' },
+      { id: 'd', label: lastExp }
+    ];
+
+    var html = '<div style="max-width:720px;margin:0 auto;padding:32px 24px 96px;box-sizing:border-box;min-height:100%;">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px;">';
+    html += '<button type="button" data-action="closeOverlay" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:8px 0;color:#10291F;font-weight:600;font-size:15px;">';
+    html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10291F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg> Voltar</button>';
+    html += '<span style="display:inline-flex;align-items:center;gap:10px;color:#10291F;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:20px;"><svg width="30" height="19" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#10291F" stroke-width="2.5"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2.5"></circle></svg> Elo</span>';
+    html += '</div>';
+    html += '<h2 style="margin:0 0 8px;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;">' + esc(title) + '</h2>';
+    html += '<p style="margin:0 0 32px;max-width:560px;color:#3E4F47;">' + esc(subtitle) + '</p>';
+    html += '<div style="display:flex;flex-direction:column;gap:22px;">';
+
+    function fieldText(id, label, value, type) {
+      return '<label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;">' + esc(label) +
+        '<input type="' + (type || 'text') + '" data-field="' + id + '" value="' + esc(value) + '" style="min-height:48px;padding:0 16px;border-radius:14px;border:1.5px solid #CBD6CF;font-size:16px;box-sizing:border-box;" /></label>';
+    }
+
+    if (isOng) {
+      html += fieldText('ovNomeOrg', 'Nome da organização *', state.ovNomeOrg);
+      html += '<label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;">CNPJ (só números) *' +
+        '<input type="text" inputmode="numeric" data-field="ovCnpj" value="' + esc(state.ovCnpj) + '" placeholder="00000000000000" style="min-height:48px;padding:0 16px;border-radius:14px;border:1.5px solid #CBD6CF;font-size:16px;box-sizing:border-box;" /></label>';
+      html += fieldText('ovNome', 'Seu nome e sobrenome (quem está cadastrando) *', state.ovNome);
+    } else {
+      html += fieldText('ovNome', 'Nome e sobrenome *', state.ovNome);
+    }
+    html += fieldText('ovLocal', 'Local (Cidade, Estado) *', state.ovLocal);
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">';
+    html += fieldText('ovEmail', 'E-mail *', state.ovEmail, 'email');
+    html += fieldText('ovTelefone', 'Telefone *', state.ovTelefone, 'tel');
+    html += '</div>';
+    html += fieldText('ovSite', siteLabel, state.ovSite);
+
+    html += '<div style="display:flex;flex-direction:column;gap:10px;"><span style="font-size:14px;font-weight:600;">' + esc(catLabel) + ' *</span><div style="display:flex;flex-direction:column;gap:8px;">';
+    CAT_DEFS_FORM.forEach(function (c) {
+      var checked = !!state.ovCats[c.id];
+      html += '<label style="display:flex;align-items:flex-start;gap:10px;font-size:15px;cursor:pointer;"><input type="checkbox" data-cat="' + c.id + '" ' + (checked ? 'checked' : '') + ' style="margin-top:3px;width:18px;height:18px;accent-color:#10291F;" /><span>' + esc(c.label) + '</span></label>';
     });
-  });
-</script>
+    html += '</div></div>';
 
+    html += '<div style="display:flex;flex-direction:column;gap:10px;"><span style="font-size:14px;font-weight:600;">' + esc(expLabel) + ' *</span><div style="display:flex;flex-direction:column;gap:8px;">';
+    expDefs.forEach(function (c) {
+      var checked = state.ovExp === c.id;
+      html += '<label style="display:flex;align-items:flex-start;gap:10px;font-size:15px;cursor:pointer;"><input type="radio" name="ov-exp" data-exp="' + c.id + '" ' + (checked ? 'checked' : '') + ' style="margin-top:3px;width:18px;height:18px;accent-color:#10291F;" /><span>' + esc(c.label) + '</span></label>';
+    });
+    html += '</div></div>';
+
+    html += '<label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;">' + esc(motivoLabel) + ' *<textarea data-field="ovMotivo" rows="3" style="padding:12px 16px;border-radius:14px;border:1.5px solid #CBD6CF;font-size:16px;resize:vertical;box-sizing:border-box;font-family:inherit;">' + esc(state.ovMotivo) + '</textarea></label>';
+
+    html += '<label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;">Como você nos encontrou? (opcional)<select data-field="ovComoEncontrou" style="min-height:48px;padding:0 16px;border-radius:14px;border:1.5px solid #CBD6CF;font-size:16px;box-sizing:border-box;background:#FFFFFF;"><option value="">Selecione</option>';
+    FIND_OPTIONS.forEach(function (opt) {
+      html += '<option value="' + esc(opt) + '" ' + (state.ovComoEncontrou === opt ? 'selected' : '') + '>' + esc(opt) + '</option>';
+    });
+    html += '</select></label>';
+
+    html += '<label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;">Feedback ou algo que não encontrou (opcional)<textarea data-field="ovFeedback" rows="2" style="padding:12px 16px;border-radius:14px;border:1.5px solid #CBD6CF;font-size:16px;resize:vertical;box-sizing:border-box;font-family:inherit;">' + esc(state.ovFeedback) + '</textarea></label>';
+
+    if (state.ovErrors) {
+      html += '<p role="alert" style="margin:0;padding:12px 16px;border-radius:14px;background:#FDF0DC;color:#7A4A00;font-size:14px;font-weight:600;">Preencha os campos obrigatórios (marcados com *) e escolha pelo menos uma categoria antes de enviar.</p>';
+    }
+    html += '<button type="button" data-action="submitOverlay" class="elo-btn" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:52px;padding:0 28px;border-radius:999px;border:none;background:#10291F;color:#FFFFFF;font-weight:600;font-size:16px;">Enviar cadastro</button>';
+    html += '<p style="margin:0;font-size:13px;color:#7A8F84;">Ao enviar, abrimos a confirmação final numa aba do Google Forms — é só clicar em "Enviar" lá pra concluir.</p>';
+    html += '</div></div>';
+    el.innerHTML = html;
+
+    el.querySelectorAll('[data-field]').forEach(function (input) {
+      input.addEventListener('input', function () { state[input.getAttribute('data-field')] = input.value; });
+    });
+    el.querySelectorAll('[data-cat]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        var id = input.getAttribute('data-cat');
+        state.ovCats[id] = input.checked;
+      });
+    });
+    el.querySelectorAll('[data-exp]').forEach(function (input) {
+      input.addEventListener('change', function () { state.ovExp = input.getAttribute('data-exp'); });
+    });
+  }
+
+  // ---------- "Encontre uma ONG" section ----------
+  function renderOngs() {
+    var cats = [{ id: 'todas', label: 'Todas' }].concat(CAT_INFO.map(function (c) { return { id: c.id, label: c.label }; }));
+    var pillsEl = document.getElementById('pills');
+    pillsEl.innerHTML = cats.map(function (c) {
+      var on = c.id === state.cat;
+      return '<button type="button" class="elo-pill" data-pill="' + c.id + '" aria-pressed="' + (on ? 'true' : 'false') + '" style="min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #10291F;background:' + (on ? '#10291F' : '#FFFFFF') + ';color:' + (on ? '#FFFFFF' : '#10291F') + ';font-size:15px;font-weight:600;">' + esc(c.label) + '</button>';
+    }).join('');
+    pillsEl.querySelectorAll('[data-pill]').forEach(function (btn) {
+      btn.addEventListener('click', function () { setState({ cat: btn.getAttribute('data-pill') }); });
+    });
+
+    var list = state.cat === 'todas' ? ONGS : ONGS.filter(function (o) { return o.categoria === state.cat; });
+    document.getElementById('countText').textContent = list.length === 0 ? 'Nenhuma organização nesta categoria ainda.' : (list.length === 1 ? '1 organização de referência' : list.length + ' organizações de referência');
+
+    var grid = document.getElementById('ongGrid');
+    var emptyEl = document.getElementById('ongEmpty');
+    if (list.length === 0) {
+      grid.style.display = 'none'; grid.innerHTML = '';
+      emptyEl.style.display = 'flex';
+    } else {
+      emptyEl.style.display = 'none';
+      grid.style.display = 'grid';
+      grid.innerHTML = list.map(function (o) {
+        return '<article class="elo-card" style="border:1.5px solid #E1E7E1;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:10px;background:#FBFCFA;">' +
+          '<span style="align-self:flex-start;padding:4px 12px;border-radius:999px;background:#E5F0E9;color:#1E4535;font-size:13px;font-weight:600;">' + esc(LABELS[o.categoria]) + '</span>' +
+          '<h3 style="margin:0;font-size:20px;font-weight:600;line-height:1.3;">' + esc(o.nome) + '</h3>' +
+          '<p style="margin:0;display:flex;align-items:center;gap:6px;font-size:14px;color:#3E4F47;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3F8361" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span>' + esc(o.cidade) + '</span></p>' +
+          '<p style="margin:0;font-size:15px;color:#3E4F47;flex-grow:1;">' + esc(o.desc) + '</p>' +
+          '<p style="margin:0;font-size:13px;color:#7A4A00;font-weight:600;">Referência, ainda não contatada</p>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:8px;"><a href="' + esc(o.site) + '" target="_blank" rel="noopener noreferrer" class="elo-btn" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#10291F;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:600;">Site oficial</a><a href="' + esc(o.mapa) + '" target="_blank" rel="noopener noreferrer" class="elo-btn" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #10291F;color:#10291F;text-decoration:none;font-size:14px;font-weight:600;">Ver no mapa</a></div>' +
+          '</article>';
+      }).join('');
+    }
+  }
+
+  // ---------- Scroll-driven categories ----------
+  function updateScrolly() {
+    var el = document.getElementById('elo-scrolly');
+    var card = document.getElementById('scrollyCard');
+    if (!el || !card) { return; }
+    var box = el.getBoundingClientRect();
+    var pin = card.offsetHeight || 600;
+    var travel = box.height - pin;
+    var vh = window.innerHeight || 800;
+    var p = travel > 0 ? (24 - box.top) / travel : -1;
+    var posF = p < 0 ? -1 : Math.round((Math.max(0, Math.min(1, p / 0.9)) * 6 - 0.5) * 100) / 100;
+    var active = p < 0 ? -1 : Math.max(0, Math.min(5, Math.round(posF)));
+    var clamp = function (v) { return Math.max(0, Math.min(1, v)); };
+    var enter = clamp((vh - box.top) / Math.max(1, vh - 24));
+    var exit = clamp((1 - p) / 0.12);
+    var t = Math.min(enter, exit);
+    var smooth = t * t * (3 - 2 * t);
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var zoom = reduce ? 1 : (1 + 0.04 * smooth);
+    var dim = smooth;
+
+    card.style.transform = 'scale(' + zoom.toFixed(3) + ')';
+    document.getElementById('dimLayer').style.opacity = dim.toFixed(2);
+
+    var cur = active >= 0 ? CAT_INFO[active] : null;
+    document.getElementById('stepText').textContent = cur ? (active + 1) + ' de 6' : 'Categorias de apoio';
+    document.getElementById('catTitle').textContent = cur ? cur.label : 'Seis formas de ajudar';
+    document.getElementById('catDesc').textContent = cur ? cur.desc : 'Continue rolando para ver cada categoria. Ou passe o mouse sobre os balões.';
+    var tagEl = document.getElementById('catTag');
+    if (cur) {
+      tagEl.style.display = 'inline-flex';
+      tagEl.textContent = cur.tag;
+      tagEl.style.background = cur.ready ? '#CFE3D6' : '#FDF0DC';
+      tagEl.style.color = cur.ready ? '#10291F' : '#7A4A00';
+    } else {
+      tagEl.style.display = 'none';
+    }
+    var barsEl = document.getElementById('bars');
+    barsEl.innerHTML = CAT_INFO.map(function (c, i) {
+      var bg = i <= active ? '#F2A63B' : 'rgba(255,255,255,0.2)';
+      return '<span class="elo-bar" style="flex:1 1 0;height:4px;border-radius:2px;background:' + bg + ';"></span>';
+    }).join('');
+
+    var blend = dim;
+    document.querySelectorAll('#eloCats .elo-cat').forEach(function (g, i) {
+      var w = Math.max(0, 1 - Math.abs(posF - i));
+      if (i === 0 && posF < 0) { w = 1; }
+      if (i === 5 && posF > 5) { w = 1; }
+      var op, sc, fill, sw;
+      if (blend <= 0) { op = ''; sc = ''; fill = ''; sw = ''; }
+      else {
+        op = ((1 - blend) * 0.92 + blend * w).toFixed(2);
+        sc = 'scale(' + ((1 - blend) * 1 + blend * (0.8 + 0.37 * w)).toFixed(3) + ')';
+        fill = 'rgba(255,255,255,' + (0.82 + 0.18 * w * blend).toFixed(2) + ')';
+        sw = (2 * w * blend).toFixed(2);
+      }
+      if (op !== '') { g.style.opacity = op; }
+      if (sc !== '') { g.style.transform = sc; }
+      var tip = g.querySelector('.elo-tip');
+      if (fill !== '') { tip.style.fill = fill; }
+      if (sw !== '') { tip.style.strokeWidth = sw; }
+    });
+
+    if (active >= 0 && !countedCat) { countedCat = true; animateCount('countCat', 6, 0); }
+    if (active >= 0 && !countedOng) { countedOng = true; animateCount('countOng', ONGS.length, 120); }
+  }
+
+  function animateCount(id, target, delay) {
+    var elp = document.getElementById(id);
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { elp.textContent = target; return; }
+    var dur = 1200, t0 = null;
+    function step(now) {
+      if (t0 === null) { t0 = now + delay; }
+      var t = Math.max(0, Math.min(1, (now - t0) / dur));
+      var eased = 1 - Math.pow(1 - t, 3);
+      elp.textContent = Math.round(eased * target);
+      if (t < 1) { requestAnimationFrame(step); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---------- Reveal-on-scroll for data-reveal blocks ----------
+  function updateReveals() {
+    var vh = window.innerHeight || 800;
+    document.querySelectorAll('[data-reveal]').forEach(function (node) {
+      var r = node.getBoundingClientRect();
+      if (r.top < vh * 0.9 && r.bottom > 0) { node.classList.add('in'); }
+    });
+  }
+
+  function onScroll() {
+    updateReveals();
+    updateScrolly();
+  }
+
+  function render() {
+    renderOverlay();
+    renderOngs();
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (!el) { return; }
+    var action = el.getAttribute('data-action');
+    if (action === 'openVol') { openOverlay('voluntario'); }
+    else if (action === 'openOng') { openOverlay('ong'); }
+    else if (action === 'closeOverlay') { closeOverlay(); }
+    else if (action === 'submitOverlay') { submitOverlay(); }
+  });
+
+  document.querySelectorAll('.elo-rv.elo-rv[data-reveal]').forEach(function (n) {
+    // mark the two "up" style blocks used for ONG cards grid (not needed here, cards are appended separately)
+  });
+
+  window.addEventListener('scroll', onScroll, true);
+  window.addEventListener('resize', onScroll);
+  render();
+  onScroll();
+})();
+</script>
 </body>
 </html>
