@@ -305,6 +305,10 @@
     return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]), 23, 59, 59);
   }
 
+  function mapaUrl(v) {
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(v.org + ', ' + v.local);
+  }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -601,6 +605,7 @@
         '<p style="margin:0;font-size:14px;color:#3F8361;font-weight:600;">' + esc(v.org) + '</p>' +
         '<p style="margin:0;display:flex;align-items:center;gap:6px;font-size:14px;color:#3E4F47;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3F8361" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span>' + esc(v.local) + '</span></p>' +
         '<p class="elo-vaga-desc" style="margin:0;font-size:15px;color:#3E4F47;flex-grow:1;">' + esc(v.desc) + '</p>' +
+        '<a href="' + esc(mapaUrl(v)) + '" target="_blank" rel="noopener noreferrer" class="elo-btn" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:38px;padding:0 14px;border-radius:999px;border:1.5px solid #10291F;color:#10291F;text-decoration:none;font-size:13px;font-weight:600;">Ver no mapa</a>' +
         '</article>';
     });
     // Duas colunas alternadas (índice par/ímpar) — no mobile viram 2 colunas lado a lado
