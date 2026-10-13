@@ -157,6 +157,7 @@
         <div role="group" aria-label="Filtrar por categoria" id="pills" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
         <p role="status" id="countText" style="margin:0;font-size:15px;color:#3E4F47;"></p>
         <div id="ongGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;"></div>
+        <div id="ongMore" style="display:none;justify-content:center;"></div>
         <div id="ongEmpty" style="display:none;border:1.5px dashed #B9C8BE;border-radius:24px;padding:28px;flex-direction:column;gap:8px;">
           <h3 style="margin:0;font-size:20px;font-weight:600;">Ainda não há ONG nesta categoria</h3>
           <p style="margin:0;color:#3E4F47;">Ela está em curadoria. Registre o que você procura e a equipe avisa quando houver uma organização.</p>
@@ -225,7 +226,9 @@
     { nome: 'Instituto PROA', categoria: 'profissionalizacao', cidade: 'São Paulo, SP (atuação em vários estados)', site: 'https://www.proa.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Instituto+PROA+S%C3%A3o+Paulo', desc: 'Fundado em 2007, oferece cursos profissionalizantes gratuitos para jovens de escola pública.' },
     { nome: 'Amigos do Bem', categoria: 'educacao', cidade: 'Sertão de PE, AL e CE', site: 'https://amigosdobem.org/', mapa: 'https://www.google.com/maps/search/?api=1&query=Amigos+do+Bem+Catimbau+PE', desc: 'Fundada em 1993, atua no sertão nordestino com projetos de educação, água, moradia, saúde e geração de renda.' },
     { nome: 'Pequeno Cotolengo do Paraná', categoria: 'saude', cidade: 'Curitiba, PR', site: 'https://www.pequenocotolengo.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Pequeno+Cotolengo+Curitiba', desc: 'Fundado em 1965, oferece acolhimento, saúde e educação gratuitos para pessoas com múltiplas deficiências.' },
-    { nome: 'Exército de Salvação Brasil', categoria: 'roupas', cidade: 'São Paulo, SP (Bosque da Saúde)', site: 'https://www.exercitodesalvacao.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Ex%C3%A9rcito+de+Salva%C3%A7%C3%A3o+Rua+Ju%C3%A1+264+S%C3%A3o+Paulo', desc: 'Atua no Brasil desde 1922. Recebe doação de roupas, móveis e outros itens usados para redistribuir a famílias em situação de vulnerabilidade.' }
+    { nome: 'Exército de Salvação Brasil', categoria: 'roupas', cidade: 'São Paulo, SP (Bosque da Saúde)', site: 'https://www.exercitodesalvacao.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Ex%C3%A9rcito+de+Salva%C3%A7%C3%A3o+Rua+Ju%C3%A1+264+S%C3%A3o+Paulo', desc: 'Atua no Brasil desde 1922. Recebe doação de roupas, móveis e outros itens usados para redistribuir a famílias em situação de vulnerabilidade.' },
+    { nome: 'Artesol – Artesanato Solidário', categoria: 'profissionalizacao', cidade: 'São Paulo, SP (Itaim Bibi)', site: 'https://artesol.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=Artesol+Avenida+Nove+de+Julho+5569+S%C3%A3o+Paulo', desc: 'Fundada em 1998, fortalece artesãos tradicionais brasileiros com capacitação, comércio justo e inclusão produtiva.', extra: true },
+    { nome: 'CVV – Centro de Valorização da Vida', categoria: 'saude', cidade: 'Atuação nacional (fundado em São Paulo, SP)', site: 'https://www.cvv.org.br/', mapa: 'https://www.google.com/maps/search/?api=1&query=CVV+Centro+de+Valoriza%C3%A7%C3%A3o+da+Vida', desc: 'Desde 1962, oferece apoio emocional voluntário e sigiloso 24h, pelo telefone 188, chat, e-mail e, em algumas cidades, presencialmente.', extra: true }
   ];
 
   var CAT_LABELS_FORM = {
@@ -252,6 +255,7 @@
 
   var state = {
     cat: 'todas',
+    showExtra: false,
     ovStage: 'closed', ovType: 'voluntario', ovErrors: false,
     ovNome: '', ovNomeOrg: '', ovCnpj: '', ovLocal: '', ovEmail: '', ovTelefone: '', ovSite: '',
     ovCats: {}, ovExp: '', ovMotivo: '', ovComoEncontrou: '', ovFeedback: '',
@@ -468,12 +472,14 @@
       btn.addEventListener('click', function () { setState({ cat: btn.getAttribute('data-pill') }); });
     });
 
-    var list = state.cat === 'todas' ? ONGS : ONGS.filter(function (o) { return o.categoria === state.cat; });
+    var full = state.cat === 'todas' ? ONGS : ONGS.filter(function (o) { return o.categoria === state.cat; });
+    var list = state.showExtra ? full : full.filter(function (o) { return !o.extra; });
+    var hiddenCount = full.length - list.length;
     document.getElementById('countText').textContent = list.length === 0 ? 'Nenhuma organização nesta categoria ainda.' : (list.length === 1 ? '1 organização de referência' : list.length + ' organizações de referência');
 
     var grid = document.getElementById('ongGrid');
     var emptyEl = document.getElementById('ongEmpty');
-    if (list.length === 0) {
+    if (list.length === 0 && hiddenCount === 0) {
       grid.style.display = 'none'; grid.innerHTML = '';
       emptyEl.style.display = 'flex';
     } else {
@@ -489,6 +495,18 @@
           '<div style="display:flex;flex-wrap:wrap;gap:8px;"><a href="' + esc(o.site) + '" target="_blank" rel="noopener noreferrer" class="elo-btn" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#10291F;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:600;">Site oficial</a><a href="' + esc(o.mapa) + '" target="_blank" rel="noopener noreferrer" class="elo-btn" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #10291F;color:#10291F;text-decoration:none;font-size:14px;font-weight:600;">Ver no mapa</a></div>' +
           '</article>';
       }).join('');
+    }
+
+    var moreEl = document.getElementById('ongMore');
+    if (hiddenCount > 0) {
+      moreEl.style.display = 'flex';
+      moreEl.innerHTML = '<button type="button" data-action="toggleExtra" class="elo-btn" style="display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #10291F;background:#FFFFFF;color:#10291F;font-weight:600;">Ver mais ' + hiddenCount + (hiddenCount === 1 ? ' ONG' : ' ONGs') + '</button>';
+    } else if (state.showExtra && full.some(function (o) { return o.extra; })) {
+      moreEl.style.display = 'flex';
+      moreEl.innerHTML = '<button type="button" data-action="toggleExtra" class="elo-btn" style="display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #10291F;background:#FFFFFF;color:#10291F;font-weight:600;">Ver menos</button>';
+    } else {
+      moreEl.style.display = 'none';
+      moreEl.innerHTML = '';
     }
   }
 
@@ -605,6 +623,7 @@
     else if (action === 'openOng') { openOverlay('ong'); }
     else if (action === 'closeOverlay') { closeOverlay(); }
     else if (action === 'submitOverlay') { submitOverlay(); }
+    else if (action === 'toggleExtra') { setState({ showExtra: !state.showExtra }); }
   });
 
   window.addEventListener('scroll', onScroll, true);
