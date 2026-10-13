@@ -32,6 +32,15 @@
   .elo-rv.up.in{transform:none}
   input,textarea,select{outline:none}
   input:focus,textarea:focus,select:focus{border-color:#3F8361}
+  .elo-vaga-col{display:contents}
+  @media (max-width:680px){
+    .elo-vaga-grid{display:flex!important;align-items:flex-start;gap:10px!important;}
+    .elo-vaga-col{display:flex!important;flex:1 1 0;min-width:0;flex-direction:column;gap:10px;}
+    .elo-vaga-grid .elo-card{width:100%;box-sizing:border-box;margin:0!important;padding:14px!important;gap:6px!important;}
+    .elo-vaga-grid .elo-card h3{font-size:16px!important;}
+    .elo-vaga-grid .elo-card p{font-size:12.5px!important;}
+    .elo-vaga-grid .elo-card span{font-size:11px!important;padding:3px 9px!important;}
+  }
   @media (prefers-reduced-motion: reduce){.elo-btn{transition:none}.elo-btn:hover{transform:none}.elo-node,.elo-flow{animation:none}.elo-cat,.elo-tip,.elo-bar,.elo-rv{transition:none}.elo-cats .elo-cat:hover{transform:none}.elo-rv{opacity:1!important;transform:none!important}}
 </style>
 </head>
@@ -176,7 +185,7 @@
           <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-0.01em;">Vagas</h2>
           <p style="margin:0;max-width:680px;color:#3E4F47;">Oportunidades reais abertas em outras plataformas de voluntariado, trazidas aqui como exemplo. Vagas com prazo saem da lista automaticamente depois da data-limite; as recorrentes ficam sempre disponíveis.</p>
         </div>
-        <div id="vagaGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;"></div>
+        <div id="vagaGrid" class="elo-vaga-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;"></div>
         <div id="vagaEmpty" style="display:none;border:1.5px dashed #B9C8BE;border-radius:24px;padding:28px;flex-direction:column;gap:8px;">
           <h3 style="margin:0;font-size:20px;font-weight:600;">Nenhuma vaga em aberto no momento</h3>
           <p style="margin:0;color:#3E4F47;">As vagas com prazo já encerrado saem automaticamente da lista.</p>
@@ -579,7 +588,7 @@
     }
     emptyEl.style.display = 'none';
     grid.style.display = 'grid';
-    grid.innerHTML = open.map(function (v, idx) {
+    var cards = open.map(function (v, idx) {
       var prazo = v.data ? 'Até ' + v.data : 'Recorrente';
       var prazoBg = v.data ? '#FDF0DC' : '#E5F0E9';
       var prazoColor = v.data ? '#7A4A00' : '#1E4535';
@@ -590,7 +599,13 @@
         '<p style="margin:0;display:flex;align-items:center;gap:6px;font-size:14px;color:#3E4F47;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3F8361" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span>' + esc(v.local) + '</span></p>' +
         '<p style="margin:0;font-size:15px;color:#3E4F47;flex-grow:1;">' + esc(v.desc) + '</p>' +
         '</article>';
-    }).join('');
+    });
+    // Duas colunas alternadas (índice par/ímpar) — no mobile viram 2 colunas lado a lado
+    // com alturas independentes (efeito "desalinhado" tipo feed); no desktop os wrappers
+    // somem (display:contents) e os cards voltam a seguir o grid responsivo normal.
+    var colA = [], colB = [];
+    cards.forEach(function (html, i) { (i % 2 === 0 ? colA : colB).push(html); });
+    grid.innerHTML = '<div class="elo-vaga-col">' + colA.join('') + '</div><div class="elo-vaga-col">' + colB.join('') + '</div>';
   }
 
   // ---------- Scroll-driven categories ----------
