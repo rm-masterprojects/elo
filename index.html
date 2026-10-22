@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#10291F">
 <title>Elo, conectando pessoas a ONGs</title>
 <meta name="description" content="O Elo aproxima quem quer ajudar com tempo, itens ou conhecimento das ONGs que precisam disso.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='22' cy='32' r='13' fill='none' stroke='%2310291F' stroke-width='6'/%3E%3Ccircle cx='42' cy='32' r='13' fill='none' stroke='%23F2A63B' stroke-width='6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
@@ -74,8 +75,8 @@
   <!-- Cabeçalho -->
   <header id="topbar" class="sticky top-0 z-50 border-b border-transparent bg-paper/85 backdrop-blur-md transition-colors">
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-      <a href="#inicio" class="flex items-center gap-2.5 font-display text-2xl font-bold text-ink">
-        <svg width="34" height="22" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#10291F" stroke-width="2.5"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2.5"></circle></svg>
+      <a href="#inicio" id="homeLink" class="flex items-center gap-2 font-display text-2xl font-bold text-ink">
+        <span data-elo-mark="light" data-mode="intro" data-w="44" data-trigger="homeLink" class="flex"></span>
         <span>Elo</span>
       </a>
       <nav aria-label="Principal" class="hidden items-center gap-1 text-[15px] font-medium text-muted lg:flex">
@@ -280,8 +281,8 @@
 
     <!-- CTA final -->
     <section data-reveal="13" class="elo-rv mx-auto flex max-w-6xl flex-col items-center px-4 pb-28 pt-24 text-center sm:px-6 sm:pb-32 sm:pt-32">
-      <svg width="68" height="44" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#10291F" stroke-width="2"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2"></circle></svg>
-      <h2 class="mt-5 max-w-3xl text-balance font-display text-[38px] font-bold leading-[1.02] tracking-[-0.025em] sm:text-6xl">Seu próximo gesto pode fechar um elo</h2>
+      <span data-elo-mark="light" data-mode="loop" data-w="132" class="flex"></span>
+      <h2 class="mt-3 max-w-3xl text-balance font-display text-[38px] font-bold leading-[1.02] tracking-[-0.025em] sm:text-6xl">Seu próximo gesto pode fechar um elo</h2>
       <p class="mt-4 max-w-md text-pretty text-muted">Leva poucos minutos. Preencha o formulário e a equipe aproxima você da ONG certa.</p>
       <div class="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
         <button type="button" data-action="openVol" class="inline-flex h-14 items-center justify-center gap-2 rounded-2xl bg-ink px-7 font-semibold text-white shadow-soft transition hover:bg-ink-soft"><i data-lucide="hand-heart" class="size-5"></i>Quero me voluntariar</button>
@@ -292,8 +293,8 @@
 
   <footer class="bg-ink text-[#CFE0D6]">
     <div class="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-12 sm:px-6 md:flex-row md:items-start md:justify-between">
-      <div class="flex items-center gap-2.5 font-display text-[22px] font-bold text-white">
-        <svg width="34" height="22" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#FFFFFF" stroke-width="2.5"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2.5"></circle></svg>
+      <div id="footLogo" class="flex items-center gap-2 font-display text-[22px] font-bold text-white">
+        <span data-elo-mark="dark" data-mode="intro" data-w="42" data-trigger="footLogo" class="flex"></span>
         <span>Elo</span>
       </div>
       <p class="max-w-xl text-sm leading-relaxed">O Elo é um projeto acadêmico de extensão de estudantes de Engenharia do Centro Universitário ETEP, em fase piloto. As ONGs listadas são exemplos públicos de referência, ainda não contatadas e sem vínculo com o projeto.</p>
@@ -387,6 +388,77 @@
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Gera o símbolo do Elo: dois anéis entrelaçados com sombra e reflexo girando.
+  // variant: 'light' (sobre fundo claro) | 'dark' (sobre fundo escuro)
+  // mode: 'loop' (anima sempre) | 'intro' (anima ao carregar e ao passar o mouse) | 'static'
+  var eloMarkSeq = 0;
+  function eloMark(opts) {
+    opts = opts || {};
+    var v = opts.variant === 'dark' ? 'dark' : 'light';
+    var mode = opts.mode || 'static';
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { mode = 'static'; }
+    var w = opts.width || 40;
+    var id = 'em' + (++eloMarkSeq);
+    var trig = (opts.trigger || id) + '.mouseenter';
+    var C = v === 'dark'
+      ? { a: ['#FFFFFF', '#E3EEE7', '#FFFFFF', '#A9C4B5'], b: ['#FFD48F', '#F2A63B', '#FFF1D6', '#B8720F'], shadow: '0,0,0', shadowOp: 0.55 }
+      : { a: ['#2C6A4D', '#10291F', '#7FB79A', '#06140E'], b: ['#FFC772', '#F2A63B', '#FFF0D2', '#B8720F'], shadow: '16,41,31', shadowOp: 0.32 };
+    // Faixa de brilho: escuro nas pontas, base no meio, um filete claro no centro
+    function grad(gid, c, dir) {
+      var g = '<linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="' + c[0] + '"/>' +
+        '<stop offset="0.42" stop-color="' + c[1] + '"/>' +
+        '<stop offset="0.5" stop-color="' + c[2] + '"/>' +
+        '<stop offset="0.58" stop-color="' + c[1] + '"/>' +
+        '<stop offset="1" stop-color="' + c[3] + '"/>';
+      if (mode !== 'static') {
+        g += '<animateTransform attributeName="gradientTransform" type="rotate" from="0 .5 .5" to="' + (dir * 360) + ' .5 .5" ' +
+          (mode === 'loop' ? 'dur="9s" repeatCount="indefinite"' : 'dur="2.6s" begin="0.5s;' + trig + '" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".45 0 .25 1"') + '/>';
+      } else {
+        g = g.replace('<linearGradient ', '<linearGradient gradientTransform="rotate(' + (dir * 35) + ' .5 .5)" ');
+      }
+      return g + '</linearGradient>';
+    }
+    // Inclinação: os anéis "deitam" (ry diminui) e por um instante formam um ∞
+    function tilt() {
+      if (mode === 'static') { return ''; }
+      if (mode === 'loop') {
+        return '<animate attributeName="ry" dur="9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.3;.45;.62;.78;1" values="13;13;7;7;13;13" keySplines="0 0 1 1;.6 0 .3 1;0 0 1 1;.6 0 .3 1;0 0 1 1"/>';
+      }
+      return '<animate attributeName="ry" dur="2.6s" begin="0.5s;' + trig + '" calcMode="spline" keyTimes="0;.35;.6;1" values="13;7;7;13" keySplines=".6 0 .3 1;0 0 1 1;.6 0 .3 1"/>';
+    }
+    function shadowAnim() {
+      if (mode === 'static') { return ''; }
+      var timing = mode === 'loop'
+        ? 'dur="9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.3;.45;.62;.78;1" keySplines="0 0 1 1;.6 0 .3 1;0 0 1 1;.6 0 .3 1;0 0 1 1"'
+        : 'dur="2.6s" begin="0.5s;' + trig + '" calcMode="spline" keyTimes="0;.35;.6;1" keySplines=".6 0 .3 1;0 0 1 1;.6 0 .3 1"';
+      var vals = mode === 'loop' ? ['24;24;27;27;24;24', '2.6;2.6;1.8;1.8;2.6;2.6', '37;37;31;31;37;37'] : ['24;27;27;24', '2.6;1.8;1.8;2.6', '37;31;31;37'];
+      return '<animate attributeName="rx" values="' + vals[0] + '" ' + timing + '/>' +
+        '<animate attributeName="ry" values="' + vals[1] + '" ' + timing + '/>' +
+        '<animate attributeName="cy" values="' + vals[2] + '" ' + timing + '/>';
+    }
+    function ring(cx, gid) {
+      return '<ellipse cx="' + cx + '" cy="20" rx="13" ry="13" fill="none" stroke="url(#' + gid + ')" stroke-width="5">' + tilt() + '</ellipse>';
+    }
+    var h = Math.round(w * 44 / 64);
+    return '<svg id="' + id + '" class="elo-mark" width="' + w + '" height="' + h + '" viewBox="0 0 64 44" fill="none" aria-hidden="true" focusable="false">' +
+      '<defs>' + grad(id + 'a', C.a, 1) + grad(id + 'b', C.b, -1) +
+      '<radialGradient id="' + id + 's"><stop offset="0" stop-color="rgb(' + C.shadow + ')" stop-opacity="' + C.shadowOp + '"/><stop offset="1" stop-color="rgb(' + C.shadow + ')" stop-opacity="0"/></radialGradient>' +
+      '<clipPath id="' + id + 'c"><rect x="28" y="20.5" width="9" height="14"/></clipPath>' +
+      '</defs>' +
+      '<ellipse cx="32" cy="37" rx="24" ry="2.6" fill="url(#' + id + 's)">' + shadowAnim() + '</ellipse>' +
+      ring(42, id + 'b') + ring(22, id + 'a') +
+      '<g clip-path="url(#' + id + 'c)">' + ring(42, id + 'b') + '</g>' +
+      '</svg>';
+  }
+
+  function mountMarks() {
+    document.querySelectorAll('[data-elo-mark]').forEach(function (el) {
+      el.innerHTML = eloMark({ variant: el.getAttribute('data-elo-mark'), mode: el.getAttribute('data-mode'), width: Number(el.getAttribute('data-w')) || 40, trigger: el.getAttribute('data-trigger') });
     });
   }
 
@@ -541,7 +613,7 @@
     el.classList.remove('hidden');
     var isOng = state.ovType === 'ong';
 
-    var brand = '<span class="inline-flex items-center gap-2 font-display text-xl font-bold text-ink"><svg width="30" height="19" viewBox="0 0 34 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8.5" stroke="#10291F" stroke-width="2.5"></circle><circle cx="23" cy="11" r="8.5" stroke="#F2A63B" stroke-width="2.5"></circle></svg>Elo</span>';
+    var brand = '<span class="inline-flex items-center gap-2 font-display text-xl font-bold text-ink">' + eloMark({ variant: 'light', mode: 'intro', width: 38 }) + 'Elo</span>';
 
     if (state.ovStage === 'thanks') {
       el.innerHTML =
@@ -895,6 +967,7 @@
   window.addEventListener('resize', function () { if (window.innerWidth >= 1024 && state.menuOpen) { setMenu(false); } onScroll(); });
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  mountMarks();
   render();
   onScroll();
   // O script do Lucide pode terminar de carregar depois; garante os ícones.
