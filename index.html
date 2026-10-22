@@ -391,7 +391,7 @@
     });
   }
 
-  // Gera o símbolo do Elo: dois anéis entrelaçados com sombra e reflexo girando.
+  // Gera o símbolo do Elo: dois anéis que se fundem num ∞, um brilho percorre o símbolo e eles voltam a ser dois anéis.
   // variant: 'light' (sobre fundo claro) | 'dark' (sobre fundo escuro)
   // mode: 'loop' (anima sempre) | 'intro' (anima ao carregar e ao passar o mouse) | 'static'
   var eloMarkSeq = 0;
@@ -405,8 +405,27 @@
     var id = 'em' + (++eloMarkSeq);
     var trig = (opts.trigger || id) + '.mouseenter';
     var C = v === 'dark'
-      ? { a: ['#FFFFFF', '#E3EEE7', '#FFFFFF', '#A9C4B5'], b: ['#FFD48F', '#F2A63B', '#FFF1D6', '#B8720F'], shadow: '0,0,0', shadowOp: 0.55 }
-      : { a: ['#2C6A4D', '#10291F', '#7FB79A', '#06140E'], b: ['#FFC772', '#F2A63B', '#FFF0D2', '#B8720F'], shadow: '16,41,31', shadowOp: 0.32 };
+      ? { a: ['#FFFFFF', '#E3EEE7', '#FFFFFF', '#A9C4B5'], b: ['#FFD48F', '#F2A63B', '#FFF1D6', '#B8720F'], shadow: '0,0,0', shadowOp: 0.55, glow: '#FFFFFF' }
+      : { a: ['#2C6A4D', '#10291F', '#7FB79A', '#06140E'], b: ['#FFC772', '#F2A63B', '#FFF0D2', '#B8720F'], shadow: '16,41,31', shadowOp: 0.32, glow: '#FFF4D6' };
+    // Formas: mesmos comandos nos dois estados para o navegador conseguir transformar um no outro
+    var SHAPE = {
+      ringL: 'M35 20C35 27.18 29.18 33 22 33C14.82 33 9 27.18 9 20C9 12.82 14.82 7 22 7C29.18 7 35 12.82 35 20Z',
+      lobeL: 'M32 20C28 24 24 29 18 29C11 29 7 25 7 20C7 15 11 11 18 11C24 11 28 16 32 20Z',
+      ringR: 'M29 20C29 12.82 34.82 7 42 7C49.18 7 55 12.82 55 20C55 27.18 49.18 33 42 33C34.82 33 29 27.18 29 20Z',
+      lobeR: 'M32 20C36 16 40 11 46 11C53 11 57 15 57 20C57 25 53 29 46 29C40 29 36 24 32 20Z',
+      // ∞ num traço só, para o brilho correr pelo símbolo inteiro
+      infinity: 'M32 20C28 16 24 11 18 11C11 11 7 15 7 20C7 25 11 29 18 29C24 29 28 24 32 20C36 16 40 11 46 11C53 11 57 15 57 20C57 25 53 29 46 29C40 29 36 24 32 20Z'
+    };
+    // Linha do tempo: anéis → ∞ (com brilho) → anéis
+    var T = mode === 'loop'
+      ? { dur: '9s', rep: 'repeatCount="indefinite"', morph: '0;.22;.38;.68;.84;1', spl: '0 0 1 1;.6 0 .3 1;0 0 1 1;.6 0 .3 1;0 0 1 1', seq: function (a, b) { return [a, a, b, b, a, a].join(';'); },
+          glowK: '0;.38;.43;.63;.68;1', runK: '0;.38;.68;1' }
+      : { dur: '3.6s', rep: 'begin="0.5s;' + trig + '"', morph: '0;.25;.72;1', spl: '.6 0 .3 1;0 0 1 1;.6 0 .3 1', seq: function (a, b) { return [a, b, b, a].join(';'); },
+          glowK: '0;.25;.31;.66;.72;1', runK: '0;.25;.72;1' };
+    function morph(attr, a, b) {
+      if (mode === 'static') { return ''; }
+      return '<animate attributeName="' + attr + '" dur="' + T.dur + '" ' + T.rep + ' calcMode="spline" keyTimes="' + T.morph + '" keySplines="' + T.spl + '" values="' + T.seq(a, b) + '"/>';
+    }
     // Faixa de brilho: escuro nas pontas, base no meio, um filete claro no centro
     function grad(gid, c, dir) {
       var g = '<linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
@@ -416,33 +435,25 @@
         '<stop offset="0.58" stop-color="' + c[1] + '"/>' +
         '<stop offset="1" stop-color="' + c[3] + '"/>';
       if (mode !== 'static') {
-        g += '<animateTransform attributeName="gradientTransform" type="rotate" from="0 .5 .5" to="' + (dir * 360) + ' .5 .5" ' +
-          (mode === 'loop' ? 'dur="9s" repeatCount="indefinite"' : 'dur="2.6s" begin="0.5s;' + trig + '" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".45 0 .25 1"') + '/>';
+        g += '<animateTransform attributeName="gradientTransform" type="rotate" from="0 .5 .5" to="' + (dir * 360) + ' .5 .5" dur="' + T.dur + '" ' + T.rep + '/>';
       } else {
         g = g.replace('<linearGradient ', '<linearGradient gradientTransform="rotate(' + (dir * 35) + ' .5 .5)" ');
       }
       return g + '</linearGradient>';
     }
-    // Inclinação: os anéis "deitam" (ry diminui) e por um instante formam um ∞
-    function tilt() {
+    function ring(side, gid) {
+      var a = SHAPE['ring' + side], b = SHAPE['lobe' + side];
+      return '<path d="' + a + '" fill="none" stroke="url(#' + gid + ')" stroke-width="5" stroke-linejoin="round">' + morph('d', a, b) + '</path>';
+    }
+    // Brilho que corre pelo ∞ enquanto os anéis estão fundidos
+    function glow() {
       if (mode === 'static') { return ''; }
-      if (mode === 'loop') {
-        return '<animate attributeName="ry" dur="9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.3;.45;.62;.78;1" values="13;13;7;7;13;13" keySplines="0 0 1 1;.6 0 .3 1;0 0 1 1;.6 0 .3 1;0 0 1 1"/>';
+      var show = '<animate attributeName="opacity" dur="' + T.dur + '" ' + T.rep + ' keyTimes="' + T.glowK + '" values="0;0;1;1;0;0"/>';
+      var run = '<animate attributeName="stroke-dashoffset" dur="' + T.dur + '" ' + T.rep + ' calcMode="spline" keyTimes="' + T.runK + '" keySplines="0 0 1 1;.45 0 .55 1;0 0 1 1" values="0;0;-100;-100"/>';
+      function trail(width, op, dash) {
+        return '<path d="' + SHAPE.infinity + '" pathLength="100" fill="none" stroke="' + C.glow + '" stroke-width="' + width + '" stroke-opacity="' + op + '" stroke-linecap="round" stroke-dasharray="' + dash + '">' + run + '</path>';
       }
-      return '<animate attributeName="ry" dur="2.6s" begin="0.5s;' + trig + '" calcMode="spline" keyTimes="0;.35;.6;1" values="13;7;7;13" keySplines=".6 0 .3 1;0 0 1 1;.6 0 .3 1"/>';
-    }
-    function shadowAnim() {
-      if (mode === 'static') { return ''; }
-      var timing = mode === 'loop'
-        ? 'dur="9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.3;.45;.62;.78;1" keySplines="0 0 1 1;.6 0 .3 1;0 0 1 1;.6 0 .3 1;0 0 1 1"'
-        : 'dur="2.6s" begin="0.5s;' + trig + '" calcMode="spline" keyTimes="0;.35;.6;1" keySplines=".6 0 .3 1;0 0 1 1;.6 0 .3 1"';
-      var vals = mode === 'loop' ? ['24;24;27;27;24;24', '2.6;2.6;1.8;1.8;2.6;2.6', '37;37;31;31;37;37'] : ['24;27;27;24', '2.6;1.8;1.8;2.6', '37;31;31;37'];
-      return '<animate attributeName="rx" values="' + vals[0] + '" ' + timing + '/>' +
-        '<animate attributeName="ry" values="' + vals[1] + '" ' + timing + '/>' +
-        '<animate attributeName="cy" values="' + vals[2] + '" ' + timing + '/>';
-    }
-    function ring(cx, gid) {
-      return '<ellipse cx="' + cx + '" cy="20" rx="13" ry="13" fill="none" stroke="url(#' + gid + ')" stroke-width="5">' + tilt() + '</ellipse>';
+      return '<g opacity="0">' + show + trail(5, 0.28, '18 82') + trail(2, 0.95, '10 90') + '</g>';
     }
     var h = Math.round(w * 44 / 64);
     return '<svg id="' + id + '" class="elo-mark" width="' + w + '" height="' + h + '" viewBox="0 0 64 44" fill="none" aria-hidden="true" focusable="false">' +
@@ -450,9 +461,10 @@
       '<radialGradient id="' + id + 's"><stop offset="0" stop-color="rgb(' + C.shadow + ')" stop-opacity="' + C.shadowOp + '"/><stop offset="1" stop-color="rgb(' + C.shadow + ')" stop-opacity="0"/></radialGradient>' +
       '<clipPath id="' + id + 'c"><rect x="28" y="20.5" width="9" height="14"/></clipPath>' +
       '</defs>' +
-      '<ellipse cx="32" cy="37" rx="24" ry="2.6" fill="url(#' + id + 's)">' + shadowAnim() + '</ellipse>' +
-      ring(42, id + 'b') + ring(22, id + 'a') +
-      '<g clip-path="url(#' + id + 'c)">' + ring(42, id + 'b') + '</g>' +
+      '<ellipse cx="32" cy="37" rx="24" ry="2.6" fill="url(#' + id + 's)">' + morph('rx', 24, 27) + morph('ry', 2.6, 1.8) + morph('cy', 37, 34.5) + '</ellipse>' +
+      ring('R', id + 'b') + ring('L', id + 'a') +
+      '<g clip-path="url(#' + id + 'c)">' + morph('opacity', 1, 0) + ring('R', id + 'b') + '</g>' +
+      glow() +
       '</svg>';
   }
 
