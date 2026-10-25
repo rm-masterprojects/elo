@@ -718,13 +718,14 @@
     mais += '<label class="' + LABEL_CLS + '">Feedback ou algo que não encontrou (opcional)<textarea data-field="ovFeedback" rows="2" class="' + AREA_CLS + '">' + esc(state.ovFeedback) + '</textarea></label>';
     html += card(mais);
 
+    html += '<p class="flex items-start gap-2.5 text-sm leading-relaxed text-muted">' + icon('shield-check', 'mt-0.5 size-5 shrink-0 text-leaf') + '<span>Aqui seus dados estão protegidos e serão tratados conforme a norma LGPD (Lei Geral de Proteção de Dados Pessoais, Lei nº 13.709/2018).' +
+      (isOng ? '' : ' Por favor conclua o preenchimento deste formulário para que possamos lhe direcionar para o segmento voluntariado desejado.') + '</span></p>';
+
     if (state.ovErrors) {
       html += '<p role="alert" class="flex items-start gap-2.5 rounded-xl bg-amber-soft p-4 text-sm font-semibold text-amber-ink">' + icon('circle-alert', 'size-5 shrink-0') + 'Preencha os campos obrigatórios (marcados com *) e escolha pelo menos uma categoria antes de enviar.</p>';
     }
     html += '<button type="button" data-action="submitOverlay" class="mt-2 inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-8 text-base font-semibold text-white shadow-soft transition hover:bg-ink-soft sm:w-auto sm:self-start">' + icon('send', 'size-5') + 'Enviar cadastro</button>';
-    html += '<p class="flex items-center gap-2 text-[13px] text-muted">' + icon('shield-check', 'size-4 text-leaf') + 'Ao enviar, seu cadastro já é registrado, sem mais nenhum passo.</p>';
-    html += '<p class="text-[13px] leading-relaxed text-muted">Seus dados são usados só pela equipe do Elo para fazer a conexão entre voluntários e ONGs, conforme a LGPD (Lei nº 13.709/2018). Não publicamos seus contatos.</p>';
-    html += '</div></div>';
+    html += '<p class="text-[13px] text-muted">Ao enviar, seu cadastro já é registrado, sem mais nenhum passo.</p>';    html += '</div></div>';
     el.innerHTML = html;
 
     el.querySelectorAll('[data-field]').forEach(function (input) {
