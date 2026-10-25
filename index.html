@@ -531,6 +531,7 @@
     state.ovNome = ''; state.ovNomeOrg = ''; state.ovCnpj = ''; state.ovLocal = '';
     state.ovEmail = ''; state.ovTelefone = ''; state.ovSite = '';
     state.ovCats = {}; state.ovExp = ''; state.ovMotivo = ''; state.ovComoEncontrou = ''; state.ovFeedback = '';
+    state.ovIdade = false;
     renderOverlay();
     document.body.style.overflow = 'hidden';
     document.getElementById('overlay').scrollTop = 0;
@@ -543,12 +544,15 @@
     renderOverlay();
     updateMobileBar();
   }
+  // Confirmação de idade (voluntários). Quando a pergunta existir no Google Forms, coloque aqui o número do entry.
+  var VOL_IDADE_ENTRY = null;
+  var VOL_IDADE_TEXTO = 'Tenho 18 anos ou mais';
   function submitOverlay() {
     var isOng = state.ovType === 'ong';
     var catSelected = Object.keys(state.ovCats).filter(function (k) { return state.ovCats[k]; });
     var required = [state.ovNome, state.ovLocal, state.ovEmail, state.ovTelefone, state.ovExp, state.ovMotivo];
     if (isOng) { required = required.concat([state.ovNomeOrg, state.ovCnpj]); }
-    var missing = required.some(function (v) { return !v || !String(v).trim(); }) || catSelected.length === 0;
+    var missing = required.some(function (v) { return !v || !String(v).trim(); }) || catSelected.length === 0 || (!isOng && !state.ovIdade);
     if (missing) {
       state.ovErrors = true;
       renderOverlay();
@@ -587,6 +591,7 @@
       add(1935206665, state.ovMotivo);
       add(324271424, state.ovComoEncontrou);
       add(1106309712, state.ovFeedback);
+      if (VOL_IDADE_ENTRY) { add(VOL_IDADE_ENTRY, VOL_IDADE_TEXTO); }
     }
     var endpoint = 'https://docs.google.com/forms/d/e/' + formId + '/formResponse';
     try {
@@ -720,12 +725,17 @@
 
     html += '<p class="flex items-start gap-2.5 text-sm leading-relaxed text-muted">' + icon('shield-check', 'mt-0.5 size-5 shrink-0 text-leaf') + '<span>Aqui seus dados estão protegidos e serão tratados conforme a norma LGPD (Lei Geral de Proteção de Dados Pessoais, Lei nº 13.709/2018).' +
       (isOng ? '' : ' Por favor conclua o preenchimento deste formulário para que possamos lhe direcionar para o segmento voluntariado desejado.') + '</span></p>';
+    if (!isOng) {
+      html += '<label class="flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 text-[15px] font-semibold leading-snug text-ink transition has-[:checked]:border-leaf has-[:checked]:bg-mint">' +
+        '<input type="checkbox" data-idade ' + (state.ovIdade ? 'checked' : '') + ' class="mt-0.5 size-5 shrink-0 accent-[#10291F]" /><span>' + VOL_IDADE_TEXTO + ' *</span></label>';
+    }
 
     if (state.ovErrors) {
-      html += '<p role="alert" class="flex items-start gap-2.5 rounded-xl bg-amber-soft p-4 text-sm font-semibold text-amber-ink">' + icon('circle-alert', 'size-5 shrink-0') + 'Preencha os campos obrigatórios (marcados com *) e escolha pelo menos uma categoria antes de enviar.</p>';
+      html += '<p role="alert" class="flex items-start gap-2.5 rounded-xl bg-amber-soft p-4 text-sm font-semibold text-amber-ink">' + icon('circle-alert', 'size-5 shrink-0') + (isOng ? 'Preencha os campos obrigatórios (marcados com *) e escolha pelo menos uma categoria antes de enviar.' : 'Preencha os campos obrigatórios (marcados com *), escolha pelo menos uma categoria e confirme que tem 18 anos ou mais antes de enviar.') + '</p>';
     }
     html += '<button type="button" data-action="submitOverlay" class="mt-2 inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-8 text-base font-semibold text-white shadow-soft transition hover:bg-ink-soft sm:w-auto sm:self-start">' + icon('send', 'size-5') + 'Enviar cadastro</button>';
-    html += '<p class="text-[13px] text-muted">Ao enviar, seu cadastro já é registrado, sem mais nenhum passo.</p>';    html += '</div></div>';
+    html += '<p class="text-[13px] text-muted">Ao enviar, seu cadastro já é registrado, sem mais nenhum passo.</p>';
+    html += '</div></div>';
     el.innerHTML = html;
 
     el.querySelectorAll('[data-field]').forEach(function (input) {
@@ -735,6 +745,9 @@
     });
     el.querySelectorAll('[data-cat]').forEach(function (input) {
       input.addEventListener('change', function () { state.ovCats[input.getAttribute('data-cat')] = input.checked; });
+    });
+    el.querySelectorAll('[data-idade]').forEach(function (input) {
+      input.addEventListener('change', function () { state.ovIdade = input.checked; });
     });
     el.querySelectorAll('[data-exp]').forEach(function (input) {
       input.addEventListener('change', function () { state.ovExp = input.getAttribute('data-exp'); });
